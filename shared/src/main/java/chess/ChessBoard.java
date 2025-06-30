@@ -43,5 +43,38 @@ public class ChessBoard {
      */
     public void resetBoard() {
         board = new ChessPiece[8][8];
+
+        //add chess
+        //queen
+        addPiece(new ChessPosition(1,4), new QUEEN("white"));
+        addPiece(new ChessPosition(8,4), new QUEEN("black")); //???
+
+        //king
+        addPiece(new ChessPosition(1,5), new King("white"));
+        addPiece(new ChessPosition(8,5), new King("black"));
+
+        //pawn
+        for (int i = 1; i<=8; i++) {
+            addPiece(new ChessPosition(2,i), new Pawn("white"));
+            addPiece(new ChessPosition(7,i), new Pawn("black"));
+        }
+
+        //rock
+        addPiece(new ChessPosition(1,1), new Rock("white"));
+        addPiece(new ChessPosition(1,8), new Rock("white"));
+        addPiece(new ChessPosition(8,1), new Rock("black"));
+        addPiece(new ChessPosition(8,8), new Rock("black"));
+
+        //knight
+        addPiece(new ChessPosition(1,2), new Knight("white"));
+        addPiece(new ChessPosition(1,7), new Knight("white"));
+        addPiece(new ChessPosition(8,2), new Knight("black"));
+        addPiece(new ChessPosition(8,7), new Knight("black"));
+
+        //bishop
+        addPiece(new ChessPosition(1,3), new Bishop("white"));
+        addPiece(new ChessPosition(1,6), new Bishop("white"));
+        addPiece(new ChessPosition(8,3), new Bishop("black"));
+        addPiece(new ChessPosition(8,6), new Bishop("black"));
     }
 }
