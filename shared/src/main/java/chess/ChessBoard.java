@@ -6,6 +6,7 @@ package chess;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
+
 public class ChessBoard {
     ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
