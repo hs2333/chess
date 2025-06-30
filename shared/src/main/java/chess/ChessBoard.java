@@ -8,7 +8,7 @@ package chess;
  */
 
 public class ChessBoard {
-    ChessPiece[][] board = new ChessPiece[8][8];
+    ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {
     }
 
@@ -19,7 +19,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getRow()-1][position.getColumn()-1] = piece;
+        squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -30,7 +30,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow()-1][position.getColumn()-1];
+        return squares[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -38,16 +38,16 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        board = new ChessPiece[8][8];
+        squares = new ChessPiece[8][8];
 
         //add chess
         //queen
-        addPiece(new ChessPosition(1,4), new QUEEN("white"));
-        addPiece(new ChessPosition(8,4), new QUEEN("black")); //???
+        addPiece(new ChessPosition(1,4), ChessPiece.PieceType.QUEEN("white"));
+        addPiece(new ChessPosition(8,4), ChessPiece.PieceType.QUEEN("black")); //???
 
         //king
-        addPiece(new ChessPosition(1,5), new King("white"));
-        addPiece(new ChessPosition(8,5), new King("black"));
+        addPiece(new ChessPosition(1,5), ChessPiece.PieceType.KING("white"));
+        addPiece(new ChessPosition(8,5), ChessPiece.PieceType.KING("black"));
 
         //pawn
         for (int i = 1; i<=8; i++) {
