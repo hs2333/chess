@@ -2,37 +2,31 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-public class Knight extends ChessPiece {
 
-    public Knight(ChessGame.TeamColor color) {
-        super(color, PieceType.KNIGHT);
-    }
-
+public class Knight implements MoveCalculator{
     @Override
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
-        int[][] offsets = {
-                {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
-                {1, -2}, {1, 2}, {2, -1}, {2, 1}
-        };
+    public Collection<ChessMove> Move(ChessBoard board, ChessPosition position) {
+        Collection<ChessMove> possibleMoves = new ArrayList<>();
+        int chessRow = position.getRow();
+        int chessCol = position.getColumn();
+        int[] rowDir = {-1, 1, -2, 2, -2, 2, -1, 1};
+        int[] colDir = {2, 2, 1, 1, -1, -1, -2, -2};
+        for (int i = 0; i<8; i++) {
+            int newRow = chessRow + rowDir[i];
+            int newCol = chessCol + colDir[i];
 
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
+            //check valid position+
 
-        for (int[] offset : offsets) {
-            int r = row + offset[0];
-            int c = col + offset[1];
-            if (r >= 1 && r <= 8 && c >= 1 && c <= 8) {
-                ChessPosition to = new ChessPosition(r, c);
-                ChessPiece target = board.getPiece(to);
-                if (target == null || target.getTeamColor() != this.getTeamColor()) {
-                    moves.add(new ChessMove(myPosition, to, null));
+            if ((newRow >= 1 && newRow <=8) && (newCol >= 1 && newCol <=8)) {
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece oldPiece = board.getPiece(position);
+                ChessPiece newPiece = board.getPiece(newPosition);
+                if  ((newPiece==null) || (newPiece.getTeamColor()!=oldPiece.getTeamColor())) {
+                    possibleMoves.add(new ChessMove(position,newPosition,null));
                 }
             }
         }
-
-        return moves;
+        return possibleMoves;
     }
 }
