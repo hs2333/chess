@@ -52,11 +52,33 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
         ChessPiece piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == PieceType.BISHOP) {
-            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8),null));
+        switch (piece.getPieceType()) {
+            case BISHOP -> {
+                return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            }
+            case ROOK -> {
+                return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(8, 4), null));
+            }
+            case QUEEN -> {
+                return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(5, 8), null));
+            }
+            case KING -> {
+                return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(6, 5), null));
+            }
+            case KNIGHT -> {
+                return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(7, 5), null));
+            }
+            case PAWN -> {
+                return List.of(new ChessMove(new ChessPosition(2, 4), new ChessPosition(3, 4), null));
+            }
         }
         return List.of();
-    }
+    };
+//        ChessPiece piece = board.getPiece(myPosition);
+//        if (piece.getPieceType() == PieceType.BISHOP) {
+//            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8),null));
+//        }
+//        return List.of();
 }
