@@ -42,35 +42,35 @@ public class ChessBoard {
 
         //add chess
         //queen
-        addPiece(new ChessPosition(1,4), ChessPiece.PieceType.QUEEN("white"));
-        addPiece(new ChessPosition(8,4), ChessPiece.PieceType.QUEEN("black")); //???
+        addPiece(new ChessPosition(1,4), new Queen(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(8,4), new Queen(ChessGame.TeamColor.BLACK)); //unresolved symbol?
 
         //king
-        addPiece(new ChessPosition(1,5), ChessPiece.PieceType.KING("white"));
-        addPiece(new ChessPosition(8,5), ChessPiece.PieceType.KING("black"));
+        addPiece(new ChessPosition(1,5), new King(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(8,5), new King(ChessGame.TeamColor.BLACK));
 
         //pawn
         for (int i = 1; i<=8; i++) {
-            addPiece(new ChessPosition(2,i), new Pawn("white"));
-            addPiece(new ChessPosition(7,i), new Pawn("black"));
+            addPiece(new ChessPosition(2,i), new Pawn(ChessGame.TeamColor.WHITE));
+            addPiece(new ChessPosition(7,i), new Pawn(ChessGame.TeamColor.BLACK));
         }
 
         //rock
-        addPiece(new ChessPosition(1,1), new Rock("white"));
-        addPiece(new ChessPosition(1,8), new Rock("white"));
-        addPiece(new ChessPosition(8,1), new Rock("black"));
-        addPiece(new ChessPosition(8,8), new Rock("black"));
+        addPiece(new ChessPosition(1,1), new Rook(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(1,8), new Rook(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(8,1), new Rook(ChessGame.TeamColor.BLACK));
+        addPiece(new ChessPosition(8,8), new Rook(ChessGame.TeamColor.BLACK));
 
         //knight
-        addPiece(new ChessPosition(1,2), new Knight("white"));
-        addPiece(new ChessPosition(1,7), new Knight("white"));
-        addPiece(new ChessPosition(8,2), new Knight("black"));
-        addPiece(new ChessPosition(8,7), new Knight("black"));
+        addPiece(new ChessPosition(1,2), new Knight(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(1,7), new Knight(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(8,2), new Knight(ChessGame.TeamColor.BLACK));
+        addPiece(new ChessPosition(8,7), new Knight(ChessGame.TeamColor.BLACK));
 
         //bishop
-        addPiece(new ChessPosition(1,3), new Bishop("white"));
-        addPiece(new ChessPosition(1,6), new Bishop("white"));
-        addPiece(new ChessPosition(8,3), new Bishop("black"));
-        addPiece(new ChessPosition(8,6), new Bishop("black"));
+        addPiece(new ChessPosition(1,3), new Bishop(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(1,6), new Bishop(ChessGame.TeamColor.WHITE));
+        addPiece(new ChessPosition(8,3), new Bishop(ChessGame.TeamColor.BLACK));
+        addPiece(new ChessPosition(8,6), new Bishop(ChessGame.TeamColor.BLACK));
     }
 }
