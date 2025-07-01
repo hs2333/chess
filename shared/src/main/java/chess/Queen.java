@@ -21,10 +21,12 @@ public class Queen implements MoveCalculator{
                 ChessPosition newPosition = new ChessPosition(newRow, newCol);
                 ChessPiece oldPiece = board.getPiece(position);
                 ChessPiece newPiece = board.getPiece(newPosition);
-                if  ((newPiece==null) || (newPiece.getTeamColor()!=oldPiece.getTeamColor())) {
+                if  ((newPiece==null)) {
                     possibleMoves.add(new ChessMove(position,newPosition,null));
-                }
-                else {break;}
+                } else if (newPiece.getTeamColor()!=oldPiece.getTeamColor()) {
+                    possibleMoves.add(new ChessMove(position,newPosition,null));
+                    break;
+                } else {break;}
                 newRow += rowDir[i];
                 newCol += colDir[i];
             }
