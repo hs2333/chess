@@ -3,6 +3,7 @@ package chess;
 import javax.xml.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -153,7 +154,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.squares = board;
     }
 
     /**
@@ -162,6 +163,21 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return squares;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return color == chessGame.color && Objects.equals(squares, chessGame.squares);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, squares);
     }
 }
+
