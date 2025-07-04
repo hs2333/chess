@@ -62,6 +62,9 @@ public class ChessGame {
         for (ChessMove move :possibleMove) {
             ChessPiece newPiece = squares.getPiece(move.getEndPosition());
             squares.addPiece(move.getEndPosition(),piece);
+            if (!(isInCheck(piece.getTeamColor()))) {
+                validMove.add(move);
+            }
         }
         return validMove;
     }
@@ -73,7 +76,21 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> validMove = validMoves(move.getStartPosition());
+        ChessPosition position = move.getStartPosition();
+        ChessPiece piece = squares.getPiece(position);
+        ChessGame.TeamColor color = piece.getTeamColor();
+        if ((validMove.contains(move)) && (getTeamTurn() == color)) {
+            squares.addPiece(move.getStartPosition(),null);
+            squares.addPiece(move.getEndPosition(),piece);
+            TeamColor nextTurn;
+            if (getTeamTurn() == TeamColor.WHITE) {
+                nextTurn = TeamColor.BLACK;
+            } else {
+                nextTurn = TeamColor.WHITE;
+            }
+            setTeamTurn(nextTurn);
+        }
     }
 
     /**
@@ -139,7 +156,7 @@ public class ChessGame {
                 //check team
                 if (piece.getTeamColor() == color) {
                     if (!((validMoves(position)).isEmpty())) {
-                        return false
+                        return false;
                     }
 
                 }
