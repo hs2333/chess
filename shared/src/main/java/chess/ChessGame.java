@@ -61,6 +61,7 @@ public class ChessGame {
             ChessPiece newPiece = squares.getPiece(move.getEndPosition());
             squares.addPiece(move.getEndPosition(),piece);
         }
+        return validMove;
     }
 
     /**
@@ -80,7 +81,35 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition checkPosition = null;
+        //loop through the board - find kind
+        for (int row=1; row<=8; row++) {
+            for (int col=1; col<=8; col++) {
+                ChessPosition position = new ChessPosition(row,col);
+                ChessPiece piece = squares.getPiece(position);
+                //check team and type
+                if ((piece.getTeamColor() == color) && (piece.getPieceType() == ChessPiece.PieceType.KING)) {
+                    checkPosition = position;
+                    break;
+                }
+            }
+        }
+        //loop through the board - find enermy
+        for (int row=1; row<=8; row++) {
+            for (int col=1; col<=8; col++) {
+                ChessPosition position = new ChessPosition(row,col);
+                ChessPiece piece = squares.getPiece(position);
+                //check team
+                if (piece.getTeamColor() != color) {
+                    for (ChessMove move : piece.pieceMoves(squares, new ChessPosition(row,col))) {
+                        if (move.getEndPosition().equals(checkPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
