@@ -1,5 +1,6 @@
 package chess;
 
+import javax.xml.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -119,7 +120,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return ((isInCheck(color)) && (isInStalemate(color)));
     }
 
     /**
@@ -130,7 +131,20 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for (int row=1; row<=8; row++) {
+            for (int col=1; col<=8; col++) {
+                ChessPosition position = new ChessPosition(row,col);
+                ChessPiece piece = squares.getPiece(position);
+                //check team
+                if (piece.getTeamColor() == color) {
+                    if (!((validMoves(position)).isEmpty())) {
+                        return false
+                    }
+
+                }
+            }
+            }
+        return true;
     }
 
     /**
