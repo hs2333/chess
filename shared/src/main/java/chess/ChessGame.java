@@ -59,12 +59,18 @@ public class ChessGame {
         //if null
         if (piece == null) {return null;}
         //valid check at the end position
-        for (ChessMove move :possibleMove) {
-            ChessPiece newPiece = squares.getPiece(move.getEndPosition());
-            squares.addPiece(move.getEndPosition(),piece);
+        for (ChessMove move : possibleMove) {
+            ChessPosition endPosition = move.getEndPosition();
+            ChessPiece newPiece = squares.getPiece(endPosition);
+            //first clear the piece at startPosition
+            squares.addPiece(startPosition,null);
+            squares.addPiece(endPosition,piece);
             if (!(isInCheck(piece.getTeamColor()))) {
                 validMove.add(move);
             }
+            //cancel the move
+            squares.addPiece(endPosition,newPiece);
+            squares.addPiece(startPosition,piece);
         }
         return validMove;
     }
@@ -77,12 +83,17 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> validMove = validMoves(move.getStartPosition());
+        if (validMove == null) {throw new InvalidMoveException("No valid moves.");}
+
         ChessPosition position = move.getStartPosition();
         ChessPiece piece = squares.getPiece(position);
+        if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");})
         ChessGame.TeamColor color = piece.getTeamColor();
+        ChessPosition endPosition = move.getEndPosition();
+
         if ((validMove.contains(move)) && (getTeamTurn() == color)) {
-            squares.addPiece(move.getStartPosition(),null);
-            squares.addPiece(move.getEndPosition(),piece);
+            squares.addPiece(position,null);
+            squares.addPiece(endPosition,piece);
             TeamColor nextTurn;
             if (getTeamTurn() == TeamColor.WHITE) {
                 nextTurn = TeamColor.BLACK;
