@@ -87,9 +87,13 @@ public class ChessGame {
 
         ChessPosition position = move.getStartPosition();
         ChessPiece piece = squares.getPiece(position);
-        if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");})
+        if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");}
         ChessGame.TeamColor color = piece.getTeamColor();
         ChessPosition endPosition = move.getEndPosition();
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        if (promotionPiece != null) {
+            piece = new ChessPiece(color,promotionPiece);
+        }
 
         if ((validMove.contains(move)) && (getTeamTurn() == color)) {
             squares.addPiece(position,null);
@@ -117,21 +121,25 @@ public class ChessGame {
             for (int col=1; col<=8; col++) {
                 ChessPosition position = new ChessPosition(row,col);
                 ChessPiece piece = squares.getPiece(position);
+                //skip if no piece
+                if (piece == null) {continue;}
                 //check team and type
                 if ((piece.getTeamColor() == color) && (piece.getPieceType() == ChessPiece.PieceType.KING)) {
                     checkPosition = position;
-                    break;
                 }
             }
         }
-        //loop through the board - find enermy
+        //loop through the board - find enemy
         for (int row=1; row<=8; row++) {
             for (int col=1; col<=8; col++) {
                 ChessPosition position = new ChessPosition(row,col);
                 ChessPiece piece = squares.getPiece(position);
+                //skip if no piece
+                if (piece == null) {continue;}
+                ChessGame.TeamColor color = piece.getTeamColor();
                 //check team
-                if (piece.getTeamColor() != color) {
-                    for (ChessMove move : piece.pieceMoves(squares, new ChessPosition(row,col))) {
+                if (color != teamColor) {
+                    for (ChessMove move : piece.pieceMoves(squares, position)) {
                         if (move.getEndPosition().equals(checkPosition)) {
                             return true;
                         }
