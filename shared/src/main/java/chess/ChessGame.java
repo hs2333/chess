@@ -12,19 +12,32 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor color;
+    private chess.ChessGame.TeamColor color;
     private ChessBoard squares;
+    private ChessMove lastMove; // en passant
+
 
     public ChessGame() {
-        setTeamTurn(TeamColor.WHITE);
+        setTeamTurn(chess.ChessGame.TeamColor.WHITE);
         squares = new ChessBoard();
         squares.resetBoard();
     }
 
+    private boolean wouldBeInCheck(ChessPosition from, ChessPosition to, ChessPiece piece) {
+        ChessPiece originalEnd = squares.getPiece(to);
+        squares.addPiece(from, null);
+        squares.addPiece(to, piece);
+        boolean result = isInCheck(piece.getTeamColor());
+        squares.addPiece(to, originalEnd);
+        squares.addPiece(from, piece);
+        return result;
+    }
+
+
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {
+    public chess.ChessGame.TeamColor getTeamTurn() {
         return color;
     }
 
@@ -33,7 +46,7 @@ public class ChessGame {
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {
+    public void setTeamTurn(chess.ChessGame.TeamColor team) {
         color = team;
     }
 
@@ -64,6 +77,10 @@ public class ChessGame {
         for (ChessMove move : possibleMove) {
             ChessPosition endPosition = move.getEndPosition();
             ChessPiece newPiece = squares.getPiece(endPosition);
+            if (piece.getPieceType() == ChessPiece.PieceType.KING &&
+                    Math.abs(endPosition.getColumn() - startPosition.getColumn()) == 2) {
+                continue;
+            }
             //first clear the piece at startPosition
             squares.addPiece(startPosition,null);
             squares.addPiece(endPosition,piece);
@@ -74,6 +91,25 @@ public class ChessGame {
             squares.addPiece(endPosition,newPiece);
             squares.addPiece(startPosition,piece);
         }
+
+        //en passant
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null) {
+            ChessPiece lastMovedPiece = squares.getPiece(lastMove.getEndPosition());
+            if (lastMovedPiece != null &&
+                    lastMovedPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                    Math.abs(lastMove.getStartPosition().getRow() - lastMove.getEndPosition().getRow()) == 2 &&
+                    lastMove.getEndPosition().getRow() == startPosition.getRow() &&
+                    Math.abs(lastMove.getEndPosition().getColumn() - startPosition.getColumn()) == 1) {
+
+                int direction = (piece.getTeamColor() == chess.ChessGame.TeamColor.WHITE) ? 1 : -1;
+                ChessPosition target = new ChessPosition(startPosition.getRow() + direction, lastMove.getEndPosition().getColumn());
+                if (!wouldBeInCheck(startPosition, target, piece)) {
+                    validMove.add(new ChessMove(startPosition, target, null));
+                }
+            }
+        }
+
+
         return validMove;
     }
 
@@ -90,21 +126,37 @@ public class ChessGame {
         ChessPosition position = move.getStartPosition();
         ChessPiece piece = squares.getPiece(position);
         if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");}
-        ChessGame.TeamColor color = piece.getTeamColor();
+        chess.ChessGame.TeamColor color = piece.getTeamColor();
         ChessPosition endPosition = move.getEndPosition();
-            ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
-            if (promotionPiece != null) {
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        if (promotionPiece != null) {
             piece = new ChessPiece(color,promotionPiece);
         }
 
         if ((validMove.contains(move)) && (getTeamTurn() == color)) {
+            //en passant capture
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null) {
+                if (Math.abs(position.getColumn() - endPosition.getColumn()) == 1 &&
+                        squares.getPiece(endPosition) == null) {
+                    //remove captured pawn
+                    int direction = (piece.getTeamColor() == chess.ChessGame.TeamColor.WHITE) ? -1 : 1;
+                    ChessPosition captured = new ChessPosition(endPosition.getRow() + direction, endPosition.getColumn());
+                    squares.addPiece(captured, null);
+                }
+            }
+
+            //normal move
             squares.addPiece(position,null);
             squares.addPiece(endPosition,piece);
-            TeamColor nextTurn;
-            if (getTeamTurn() == TeamColor.WHITE) {
-                nextTurn = TeamColor.BLACK;
+
+            //update lastMove
+            lastMove = move;
+
+            chess.ChessGame.TeamColor nextTurn;
+            if (getTeamTurn() == chess.ChessGame.TeamColor.WHITE) {
+                nextTurn = chess.ChessGame.TeamColor.BLACK;
             } else {
-                nextTurn = TeamColor.WHITE;
+                nextTurn = chess.ChessGame.TeamColor.WHITE;
             }
             setTeamTurn(nextTurn);
         } else {
@@ -118,7 +170,7 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    public boolean isInCheck(TeamColor teamColor) {
+    public boolean isInCheck(chess.ChessGame.TeamColor teamColor) {
         ChessPosition checkPosition = null;
         //loop through the board - find kind
         for (int row=1; row<=8; row++) {
@@ -140,7 +192,7 @@ public class ChessGame {
                 ChessPiece piece = squares.getPiece(position);
                 //skip if no piece
                 if (piece == null) {continue;}
-                ChessGame.TeamColor color = piece.getTeamColor();
+                chess.ChessGame.TeamColor color = piece.getTeamColor();
                 //check team
                 if (color != teamColor) {
                     for (ChessMove move : piece.pieceMoves(squares, position)) {
@@ -160,7 +212,7 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
-    public boolean isInCheckmate(TeamColor teamColor) {
+    public boolean isInCheckmate(chess.ChessGame.TeamColor teamColor) {
         if (!isInCheck(teamColor)) return false;
 
         for (int row = 1; row <= 8; row++) {
@@ -171,7 +223,7 @@ public class ChessGame {
 
                 Collection<ChessMove> validMove = validMoves(position);
                 if (validMove != null && !validMove.isEmpty()) {
-                    return false;  // There is at least one escape from check
+                    return false;  //at least one escape from check
                 }
             }
         }
@@ -185,7 +237,7 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
-    public boolean isInStalemate(TeamColor teamColor) {
+    public boolean isInStalemate(chess.ChessGame.TeamColor teamColor) {
         // not in check
         if (isInCheck(teamColor)) {
             return false;
@@ -196,7 +248,7 @@ public class ChessGame {
                 ChessPiece piece = squares.getPiece(position);
                 //check piece
                 if (piece == null) {continue;}
-                ChessGame.TeamColor color = piece.getTeamColor();
+                chess.ChessGame.TeamColor color = piece.getTeamColor();
                 //check team
                 if (color == teamColor) {
                     Collection<ChessMove> validMove = validMoves(position);
@@ -206,7 +258,7 @@ public class ChessGame {
 
                 }
             }
-            }
+        }
         return true;
     }
 
@@ -233,7 +285,7 @@ public class ChessGame {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ChessGame chessGame = (ChessGame) o;
+        chess.ChessGame chessGame = (chess.ChessGame) o;
         return color == chessGame.color && Objects.equals(squares, chessGame.squares);
     }
 
@@ -242,4 +294,6 @@ public class ChessGame {
         return Objects.hash(color, squares);
     }
 }
+
+
 
