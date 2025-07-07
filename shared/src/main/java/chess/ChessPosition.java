@@ -1,7 +1,7 @@
 package chess;
 
+import java.util.Arrays;
 import java.util.Objects;
-
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -22,7 +22,7 @@ public class ChessPosition {
      * @return which row this position is in
      * 1 codes for the bottom row
      */
-    public int getRow(){
+    public int getRow() {
         return row;
     }
 
@@ -36,7 +36,10 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return String.format("Position-rc: [%d,%d]", row, col);
+        return "ChessPosition{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
     }
 
     @Override
