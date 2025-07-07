@@ -93,9 +93,9 @@ public class ChessGame {
         ChessGame.TeamColor color = piece.getTeamColor();
         ChessPosition endPosition = move.getEndPosition();
             ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
-            //if (promotionPiece != null) {
-            //piece = new ChessPiece(color,promotionPiece);
-        //}
+            if (promotionPiece != null) {
+            piece = new ChessPiece(color,promotionPiece);
+        }
 
         if ((validMove.contains(move)) && (getTeamTurn() == color)) {
             squares.addPiece(position,null);
@@ -161,7 +161,21 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return  ((isInStalemate(teamColor)) && (isInCheck(teamColor)));
+        if (!isInCheck(teamColor)) return false;
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = squares.getPiece(position);
+                if (piece == null || piece.getTeamColor() != teamColor) continue;
+
+                Collection<ChessMove> validMove = validMoves(position);
+                if (validMove != null && !validMove.isEmpty()) {
+                    return false;  // There is at least one escape from check
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -172,6 +186,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        // not in check
+        if (isInCheck(teamColor)) {
+            return false;
+        }
         for (int row=1; row<=8; row++) {
             for (int col=1; col<=8; col++) {
                 ChessPosition position = new ChessPosition(row,col);
