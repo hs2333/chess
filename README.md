@@ -2,6 +2,9 @@
 
 This project demonstrates mastery of proper software design, client/server architecture, networking using HTTP and WebSocket, database persistence, unit testing, serialization, and security.
 
+## Server Design (Phase 2)
+[Phase 2 Sequence Diagram README](shared/src/main/java/chess/Phase2-README.md)
+
 ## 10k Architecture Overview
 
 The application implements a multiplayer chess server and a command line chess client.
