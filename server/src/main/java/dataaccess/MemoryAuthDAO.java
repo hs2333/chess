@@ -17,4 +17,13 @@ public class MemoryAuthDAO {
     public void clear() {
         tokens.clear();
     }
+
+    public void deleteAuth(String token) {
+        tokens.remove(token);
+    }
+
+    public boolean isValidToken(String token) {
+        return tokens.containsKey(token);
+    }
+
 }

@@ -13,8 +13,12 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         var userDAO = new MemoryUserDAO();
         var authDAO = new MemoryAuthDAO();
-        Spark.post("/user", new RegisterHandler(userDAO, authDAO));
+        var gameDAO = new MemoryGameDAO();
 
+        Spark.post("/user", new RegisterHandler(userDAO, authDAO));
+        Spark.post("/session", new LoginHandler(userDAO, authDAO));
+        Spark.delete("/session", new LogoutHandler(userDAO, authDAO));
+        Spark.delete("/db", new ClearHandler(userDAO, authDAO, gameDAO));
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();

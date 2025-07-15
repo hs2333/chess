@@ -16,4 +16,9 @@ public class MemoryUserDAO {
     public UserData getUser(String username) {
         return users.get(username);
     }
+
+    public void clear() {
+        users.clear();
+    }
+
 }

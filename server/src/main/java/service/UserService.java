@@ -31,4 +31,28 @@ public class UserService {
 
         return new RegisterResult(req.username(), token);
     }
+
+    public LoginResult login(LoginRequest req) throws DataAccessException {
+        if (req.username() == null || req.password() == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+
+        var user = userDAO.getUser(req.username());
+        if (user == null || !user.password().equals(req.password())) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+
+        String token = UUID.randomUUID().toString();
+        authDAO.insertAuth(new AuthData(token, user.username()));
+
+        return new LoginResult(user.username(), token);
+    }
+
+    public void logout(String token) throws DataAccessException {
+        if (token == null || !authDAO.isValidToken(token)) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        authDAO.deleteAuth(token);
+    }
+
 }
