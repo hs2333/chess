@@ -28,10 +28,8 @@ public class CreateGameHandler implements Route {
             var result = service.createGame(token, body);
             res.status(200);
             return serializer.toJson(result);
-        } catch (DataAccessException e) {
-            if (e.getMessage().contains("unauthorized")) res.status(401);
-            else res.status(400);
-            return serializer.toJson(Map.of("message", e.getMessage()));
+        } catch (DataAccessException exception) {
+            return serverHelp.handleError(res, exception);
         }
     }
 }
