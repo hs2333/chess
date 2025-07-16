@@ -199,18 +199,13 @@ public class ChessGame {
                 if (piece == null) {continue;}
                 chess.ChessGame.TeamColor color = piece.getTeamColor();
                 //check team
-                if (canPieceAttackPosition(piece, position, checkPosition)) {
-                    return true;
+                if (color != teamColor) {
+                    for (ChessMove move : piece.pieceMoves(squares, position)) {
+                        if (move.getEndPosition().equals(checkPosition)) {
+                            return (true);
+                        }
+                    }
                 }
-            }
-        }
-        return false;
-    }
-
-    private boolean canPieceAttackPosition(ChessPiece piece, ChessPosition from, ChessPosition target) {
-        for (ChessMove move : piece.pieceMoves(squares, from)) {
-            if (move.getEndPosition().equals(target)) {
-                return true;
             }
         }
         return false;
