@@ -6,7 +6,6 @@ import java.util.Collection;
 public class Queen implements MoveCalculator{
     @Override
     public Collection<ChessMove> moveMove(ChessBoard board, ChessPosition position) {
-        Collection<ChessMove> possibleMove = new ArrayList<>();
 
         //chess moving direction
         int[] rowD = {1,1,1, 0,0, -1,-1,-1};
