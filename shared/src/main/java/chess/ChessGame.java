@@ -140,7 +140,7 @@ public class ChessGame {
     }
 
     private void handleEnPassant(ChessPiece piece, ChessPosition from, ChessPosition to) {
-        if (piece.getPieceType() != ChessPiece.PieceType.PAWN || lastMove == null) return;
+        if (piece.getPieceType() != ChessPiece.PieceType.PAWN || lastMove == null) {return;}
 
         boolean isDiagonalAdvance = Math.abs(from.getColumn() - to.getColumn()) == 1;
         boolean isTargetEmpty = squares.getPiece(to) == null;
@@ -155,12 +155,12 @@ public class ChessGame {
 
     private void validateMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> validMove = validMoves(move.getStartPosition());
-        if (validMove == null) throw new InvalidMoveException("No valid moves.");
+        if (validMove == null) {throw new InvalidMoveException("No valid moves.");}
 
         ChessPiece piece = squares.getPiece(move.getStartPosition());
-        if (piece == null) throw new InvalidMoveException("Piece doesn't exist.");
-        if (getTeamTurn() != piece.getTeamColor()) throw new InvalidMoveException("Not your turn.");
-        if (!validMove.contains(move)) throw new InvalidMoveException("Invalid move.");
+        if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");}
+        if (getTeamTurn() != piece.getTeamColor()) {throw new InvalidMoveException("Not your turn.");}
+        if (!validMove.contains(move)) {throw new InvalidMoveException("Invalid move.");}
     }
 
     private void switchTurn() {

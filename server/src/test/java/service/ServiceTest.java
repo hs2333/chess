@@ -5,21 +5,29 @@ import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
     private UserService userService;
+    private GameService gameService;
+    private ClearService clearService;
+    private MemoryUserDAO userDAO;
+    private MemoryAuthDAO authDAO;
+    private MemoryGameDAO gameDAO;
 
-    //setup
+    //set up
     @BeforeEach
     public void setup() {
-        MemoryUserDAO userDAO = new MemoryUserDAO();
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
+        userDAO = new MemoryUserDAO();
+        authDAO = new MemoryAuthDAO();
+        gameDAO = new MemoryGameDAO();
         userService = new UserService(userDAO, authDAO);
+        gameService = new GameService(gameDAO, authDAO);
+        clearService = new ClearService(userDAO, authDAO, gameDAO);
     }
 
 
+    //USER
     //test registration
     @Test
     public void testRegisterPositive() throws DataAccessException {
@@ -66,5 +74,65 @@ public class ServiceTest {
     @Test
     public void testLogoutNegative() {
         assertThrows(DataAccessException.class, () -> userService.logout("fake-token"));
+    }
+
+
+    //CLEAR
+    //test clear
+
+    //GAME
+    //test create game
+    @Test
+    public void testCreateGamePositive() throws DataAccessException {
+        RegisterRequest request = new RegisterRequest("creator", "pass", "email");
+        RegisterResult regResult = userService.register(request);
+
+        CreateGameRequest gameRequest = new CreateGameRequest("NewGame");
+        CreateGameResult result = gameService.createGame(regResult.authToken(), gameRequest);
+
+        assertNotNull(result);
+        assertTrue(result.gameID() > 0);
+    }
+
+    @Test
+    public void testCreateGameNegative() {
+        CreateGameRequest badRequest = new CreateGameRequest("GameName");
+        assertThrows(DataAccessException.class, () -> gameService.createGame("bad-token", badRequest));
+    }
+
+    // ---- JOIN GAME ----
+    @Test
+    public void testJoinGamePositive() throws DataAccessException {
+        RegisterRequest request = new RegisterRequest("joiner", "pass", "email");
+        RegisterResult regResult = userService.register(request);
+
+        CreateGameResult created = gameService.createGame(regResult.authToken(), new CreateGameRequest("JoinGame"));
+        JoinGameRequest joinRequest = new JoinGameRequest("WHITE", created.gameID());
+
+        assertDoesNotThrow(() -> gameService.joinGame(regResult.authToken(), joinRequest));
+    }
+
+    @Test
+    public void testJoinGameNegative() throws DataAccessException {
+        JoinGameRequest badRequest = new JoinGameRequest("BLACK", 999); // game doesn't exist
+        assertThrows(DataAccessException.class, () -> gameService.joinGame("fake-token", badRequest));
+    }
+
+    // ---- LIST GAMES ----
+    @Test
+    public void testListGamesPositive() throws DataAccessException {
+        RegisterRequest request = new RegisterRequest("viewer", "pass", "email");
+        RegisterResult regResult = userService.register(request);
+
+        gameService.createGame(regResult.authToken(), new CreateGameRequest("ListableGame"));
+        ListGamesResult result = gameService.listGames(regResult.authToken());
+
+        assertNotNull(result.games());
+        assertFalse(result.games().isEmpty());
+    }
+
+    @Test
+    public void testListGamesNegative() {
+        assertThrows(DataAccessException.class, () -> gameService.listGames("invalid-token"));
     }
 }

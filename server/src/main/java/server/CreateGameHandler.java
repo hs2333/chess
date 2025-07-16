@@ -7,7 +7,6 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import java.util.Map;
 
 public class CreateGameHandler implements Route {
     private final MemoryGameDAO gameDAO;
@@ -29,7 +28,7 @@ public class CreateGameHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            return serverHelp.handleError(res, exception);
+            return ServerHelp.handleError(res, exception);
         }
     }
 }

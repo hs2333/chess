@@ -5,7 +5,7 @@ import spark.Response;
 import java.util.Map;
 import com.google.gson.Gson;
 
-public class serverHelp {
+public class ServerHelp {
     public static String handleError(Response res, Exception e) {
         if (e.getMessage().contains("unauthorized")) {
             res.status(401);

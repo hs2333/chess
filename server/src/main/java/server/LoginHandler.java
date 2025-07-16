@@ -7,7 +7,6 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import java.util.Map;
 
 public class LoginHandler implements Route {
     private final MemoryUserDAO userDAO;
@@ -28,7 +27,7 @@ public class LoginHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            return serverHelp.handleError(res, exception);
+            return ServerHelp.handleError(res, exception);
         }
     }
 }

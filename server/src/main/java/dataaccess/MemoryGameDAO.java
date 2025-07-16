@@ -22,9 +22,7 @@ public class MemoryGameDAO {
         return id;
     }
 
-//    public GameData getGame(int id) {
-//        return games.get(id);
-//    }
+    //public GameData getGame(int id) {return games.get(id);}
 
     public Map<Integer, GameData> listGames() {
         return games;
