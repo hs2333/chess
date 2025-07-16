@@ -120,49 +120,54 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        Collection<ChessMove> validMove = validMoves(move.getStartPosition());
-        if (validMove == null) {throw new InvalidMoveException("No valid moves.---");}
+        validateMove(move);
 
         ChessPosition position = move.getStartPosition();
-        ChessPiece piece = squares.getPiece(position);
-        if (piece == null) {throw new InvalidMoveException("Piece doesn't exist.");}
-        chess.ChessGame.TeamColor color = piece.getTeamColor();
         ChessPosition endPosition = move.getEndPosition();
-        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
-        if (promotionPiece != null) {
-            piece = new ChessPiece(color,promotionPiece);
+        ChessPiece piece = squares.getPiece(position);
+
+        if (move.getPromotionPiece() != null) {
+            piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
         }
 
-        if ((validMove.contains(move)) && (getTeamTurn() == color)) {
-            //en passant capture
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null) {
-                if (Math.abs(position.getColumn() - endPosition.getColumn()) == 1 &&
-                        squares.getPiece(endPosition) == null) {
-                    //remove captured pawn
-                    int direction = (piece.getTeamColor() == chess.ChessGame.TeamColor.WHITE) ? -1 : 1;
-                    ChessPosition captured = new ChessPosition(endPosition.getRow() + direction, endPosition.getColumn());
-                    squares.addPiece(captured, null);
-                }
-            }
+        handleEnPassant(piece, position, endPosition);
 
-            //normal move
-            squares.addPiece(position,null);
-            squares.addPiece(endPosition,piece);
+        squares.addPiece(position, null);
+        squares.addPiece(endPosition, piece);
+        lastMove = move;
 
-            //update lastMove
-            lastMove = move;
+        switchTurn();
+    }
 
-            chess.ChessGame.TeamColor nextTurn;
-            if (getTeamTurn() == chess.ChessGame.TeamColor.WHITE) {
-                nextTurn = chess.ChessGame.TeamColor.BLACK;
-            } else {
-                nextTurn = chess.ChessGame.TeamColor.WHITE;
-            }
-            setTeamTurn(nextTurn);
-        } else {
-            throw new InvalidMoveException("Invalid move or not your turn.");
+    private void handleEnPassant(ChessPiece piece, ChessPosition from, ChessPosition to) {
+        if (piece.getPieceType() != ChessPiece.PieceType.PAWN || lastMove == null) return;
+
+        boolean isDiagonalAdvance = Math.abs(from.getColumn() - to.getColumn()) == 1;
+        boolean isTargetEmpty = squares.getPiece(to) == null;
+
+        if (isDiagonalAdvance && isTargetEmpty) {
+            int direction = (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? -1 : 1;
+            ChessPosition captured = new ChessPosition(to.getRow() + direction, to.getColumn());
+            squares.addPiece(captured, null);
         }
     }
+
+
+    private void validateMove(ChessMove move) throws InvalidMoveException {
+        Collection<ChessMove> validMove = validMoves(move.getStartPosition());
+        if (validMove == null) throw new InvalidMoveException("No valid moves.");
+
+        ChessPiece piece = squares.getPiece(move.getStartPosition());
+        if (piece == null) throw new InvalidMoveException("Piece doesn't exist.");
+        if (getTeamTurn() != piece.getTeamColor()) throw new InvalidMoveException("Not your turn.");
+        if (!validMove.contains(move)) throw new InvalidMoveException("Invalid move.");
+    }
+
+    private void switchTurn() {
+        setTeamTurn(getTeamTurn() == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE);
+    }
+
+
 
     /**
      * Determines if the given team is in check
@@ -213,13 +218,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(chess.ChessGame.TeamColor teamColor) {
-        if (!isInCheck(teamColor)) return false;
+        if (!isInCheck(teamColor)) {return false;}
 
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = squares.getPiece(position);
-                if (piece == null || piece.getTeamColor() != teamColor) continue;
+                if (piece == null || piece.getTeamColor() != teamColor) {continue;}
 
                 Collection<ChessMove> validMove = validMoves(position);
                 if (validMove != null && !validMove.isEmpty()) {

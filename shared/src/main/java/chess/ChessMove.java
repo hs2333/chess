@@ -60,7 +60,9 @@ public class ChessMove {
             return false;
         }
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(endPosition, chessMove.endPosition) && Objects.equals(startPosition, chessMove.startPosition) && promotionPiece == chessMove.promotionPiece;
+        return Objects.equals(endPosition, chessMove.endPosition)
+                && Objects.equals(startPosition, chessMove.startPosition)
+                && promotionPiece == chessMove.promotionPiece;
     }
 
     @Override

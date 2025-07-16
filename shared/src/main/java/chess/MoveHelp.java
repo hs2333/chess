@@ -60,7 +60,7 @@ public class MoveHelp {
                     break;
                 }
 
-                if (!multiStep) break; // Don't continue if it's a one-step piece
+                if (!multiStep) {break;}
 
                 newRow += rowD[i];
                 newCol += colD[i];

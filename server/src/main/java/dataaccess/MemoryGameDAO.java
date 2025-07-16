@@ -22,9 +22,9 @@ public class MemoryGameDAO {
         return id;
     }
 
-    public GameData getGame(int id) {
-        return games.get(id);
-    }
+//    public GameData getGame(int id) {
+//        return games.get(id);
+//    }
 
     public Map<Integer, GameData> listGames() {
         return games;
@@ -33,16 +33,19 @@ public class MemoryGameDAO {
     public void joinGame(int gameID, String username, String color) throws DataAccessException {
         //get game from the map
         GameData game = games.get(gameID);
-        if (game == null) throw new DataAccessException("Error: bad request");
+        if (game == null)
+        {throw new DataAccessException("Error: bad request");}
         //handle joining (white)
         if ("WHITE".equalsIgnoreCase(color)) {
-            if (game.whiteUsername() != null) throw new DataAccessException("Error: already taken");
+            if (game.whiteUsername() != null)
+            {throw new DataAccessException("Error: already taken");}
             //update (new white)
             games.put(gameID, new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
         }
         //handle joining (black)
         else if ("BLACK".equalsIgnoreCase(color)) {
-            if (game.blackUsername() != null) throw new DataAccessException("Error: already taken");
+            if (game.blackUsername() != null)
+            {throw new DataAccessException("Error: already taken");}
             //update (new black)
             games.put(gameID, new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
         } else {
