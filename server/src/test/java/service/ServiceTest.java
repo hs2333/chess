@@ -79,6 +79,10 @@ public class ServiceTest {
 
     //CLEAR
     //test clear
+    @Test
+    public void testClearPositive() {
+        assertDoesNotThrow(() -> clearService.clear());
+    }
 
     //GAME
     //test create game
@@ -100,7 +104,7 @@ public class ServiceTest {
         assertThrows(DataAccessException.class, () -> gameService.createGame("bad-token", badRequest));
     }
 
-    // ---- JOIN GAME ----
+    //test join game
     @Test
     public void testJoinGamePositive() throws DataAccessException {
         RegisterRequest request = new RegisterRequest("joiner", "pass", "email");
@@ -118,7 +122,7 @@ public class ServiceTest {
         assertThrows(DataAccessException.class, () -> gameService.joinGame("fake-token", badRequest));
     }
 
-    // ---- LIST GAMES ----
+    //test list game
     @Test
     public void testListGamesPositive() throws DataAccessException {
         RegisterRequest request = new RegisterRequest("viewer", "pass", "email");
