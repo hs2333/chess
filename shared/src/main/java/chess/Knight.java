@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public class Knight implements MoveCalculator{
     @Override
-    public Collection<ChessMove> Move(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> moveMove(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> possibleMove = new ArrayList<>();
 
         //chess row and column

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class King implements MoveCalculator{
     @Override
-    public Collection<ChessMove> Move(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> moveMove(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> possibleMove = new ArrayList<>();
 
         //chess row and column

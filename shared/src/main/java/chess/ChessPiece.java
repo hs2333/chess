@@ -63,7 +63,7 @@ public class ChessPiece {
             case ROOK -> new Rook();
             case PAWN -> new Pawn();
         };
-    return move.Move(board,myPosition);
+    return move.moveMove(board,myPosition);
     }
 
     @Override
