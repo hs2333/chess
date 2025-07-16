@@ -199,11 +199,10 @@ public class ChessGame {
                 if (piece == null) {continue;}
                 chess.ChessGame.TeamColor color = piece.getTeamColor();
                 //check team
-                if (color != teamColor) {
+                if (color == teamColor) {continue;}
                     for (ChessMove move : piece.pieceMoves(squares, position)) {
                         if (move.getEndPosition().equals(checkPosition)) {
                             return (true);
-                        }
                     }
                 }
             }
