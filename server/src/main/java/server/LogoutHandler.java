@@ -5,15 +5,12 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
 import java.util.Map;
-
 import com.google.gson.Gson;
 
 public class LogoutHandler implements Route {
     private final MemoryUserDAO userDAO;
     private final MemoryAuthDAO authDAO;
-
     public LogoutHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;

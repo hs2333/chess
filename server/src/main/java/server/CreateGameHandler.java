@@ -3,18 +3,18 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
-import service.UserService;
+import service.GameService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import java.util.Map;
 
-public class LoginHandler implements Route {
-    private final MemoryUserDAO userDAO;
+public class CreateGameHandler implements Route {
+    private final MemoryGameDAO gameDAO;
     private final MemoryAuthDAO authDAO;
 
-    public LoginHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
-        this.userDAO = userDAO;
+    public CreateGameHandler(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
+        this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
 
@@ -22,9 +22,10 @@ public class LoginHandler implements Route {
     public Object handle(Request req, Response res) throws Exception {
         var serializer = new Gson();
         try {
-            var loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
-            var service = new UserService(userDAO, authDAO);
-            var result = service.login(loginRequest);
+            String token = req.headers("Authorization");
+            var body = serializer.fromJson(req.body(), CreateGameRequest.class);
+            var service = new GameService(gameDAO, authDAO);
+            var result = service.createGame(token, body);
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException e) {

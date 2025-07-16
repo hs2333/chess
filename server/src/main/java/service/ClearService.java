@@ -7,12 +7,14 @@ public class ClearService {
     private final MemoryAuthDAO authDAO;
     private final MemoryGameDAO gameDAO;
 
+    //ClearService
     public ClearService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
 
+    //clear
     public void clear() throws DataAccessException {
         try {
             userDAO.clear();

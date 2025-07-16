@@ -13,7 +13,6 @@ import java.util.Map;
 public class RegisterHandler implements Route {
     private final MemoryUserDAO userDAO;
     private final MemoryAuthDAO authDAO;
-
     public RegisterHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
@@ -28,9 +27,9 @@ public class RegisterHandler implements Route {
             var result = service.register(registerRequest);
             res.status(200);
             return serializer.toJson(result);
-        } catch (DataAccessException e) {
-            res.status(e.getMessage().contains("taken") ? 403 : 400);
-            return serializer.toJson(Map.of("message", e.getMessage()));
+        } catch (DataAccessException exception) {
+            res.status(exception.getMessage().contains("taken") ? 403 : 400);
+            return serializer.toJson(Map.of("message", exception.getMessage()));
         }
     }
 }

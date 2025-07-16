@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 public class MemoryUserDAO {
     private final HashMap<String, UserData> users = new HashMap<>();
-
     public void insertUser(UserData user) throws DataAccessException {
         if (users.containsKey(user.username())) {
             throw new DataAccessException("Error: already taken");
@@ -16,6 +15,8 @@ public class MemoryUserDAO {
     public UserData getUser(String username) {
         return users.get(username);
     }
+
+
 
     public void clear() {
         users.clear();
