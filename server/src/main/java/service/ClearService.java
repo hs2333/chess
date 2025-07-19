@@ -3,12 +3,12 @@ package service;
 import dataaccess.*;
 
 public class ClearService {
-    private final MemoryUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
-    private final MemoryGameDAO gameDAO;
+    private final UserDAO  userDAO;
+    private final AuthTokenDAO  authDAO;
+    private final GameDAO  gameDAO;
 
     //ClearService
-    public ClearService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
+    public ClearService(UserDAO userDAO, AuthTokenDAO authDAO, GameDAO gameDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;

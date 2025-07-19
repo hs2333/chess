@@ -7,10 +7,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.UUID;
 
 public class UserService {
-    private final MemoryUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
+    private final UserDAO  userDAO;
+    private final AuthTokenDAO  authDAO;
 
-    public UserService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
+    public UserService(UserDAO userDAO, AuthTokenDAO authDAO) {
         //user data
         this.userDAO = userDAO;
         //authentication token

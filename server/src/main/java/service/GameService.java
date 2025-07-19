@@ -5,10 +5,10 @@ import dataaccess.*;
 import model.*;
 
 public class GameService {
-    private final MemoryGameDAO gameDAO;
-    private final MemoryAuthDAO authDAO;
+    private final GameDAO  gameDAO;
+    private final AuthTokenDAO  authDAO;
 
-    public GameService(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
+    public GameService(GameDAO gameDAO, AuthTokenDAO authDAO) {
         //games
         this.gameDAO = gameDAO;
         //authentication tokens
