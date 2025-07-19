@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 public class UserService {
@@ -25,6 +27,9 @@ public class UserService {
             throw new DataAccessException("Error: already taken");
         }
 
+        //Hash and BCrypt
+        String hashedPassword = BCrypt.hashpw(req.password(), BCrypt.gensalt());
+
         //new user
         var user = new UserData(req.username(), req.password(), req.email());
         userDAO.insertUser(user);
@@ -45,7 +50,7 @@ public class UserService {
 
         //check credential
         var user = userDAO.getUser(req.username());
-        if (user == null || !user.password().equals(req.password())) {
+        if (user == null || !BCrypt.checkpw(req.password(), user.password())) {
             throw new DataAccessException("Error: unauthorized");
         }
 
