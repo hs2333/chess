@@ -11,7 +11,7 @@ import java.util.Map;
 public class ListGamesHandler implements Route {
     private final MemoryGameDAO gameDAO;
     private final MemoryAuthDAO authDAO;
-    public ListGamesHandler(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
+    public ListGamesHandler(GameDAO gameDAO, AuthTokenDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
