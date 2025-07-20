@@ -9,10 +9,10 @@ import spark.Response;
 import spark.Route;
 
 public class CreateGameHandler implements Route {
-    private final GameDAO gameDAO;
-    private final AuthTokenDAO authDAO;
+    private final MemoryGameDAO gameDAO;
+    private final MemoryAuthDAO authDAO;
 
-    public CreateGameHandler(GameDAO gameDAO, AuthTokenDAO authDAO) {
+    public CreateGameHandler(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }

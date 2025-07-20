@@ -11,10 +11,10 @@ import spark.Route;
 import java.util.Map;
 
 public class JoinGameHandler implements Route {
-    private final GameDAO gameDAO;
-    private final AuthTokenDAO  authDAO;
+    private final MemoryGameDAO gameDAO;
+    private final MemoryAuthDAO authDAO;
 
-    public JoinGameHandler(GameDAO gameDAO, AuthTokenDAO authDAO) {
+    public JoinGameHandler(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }

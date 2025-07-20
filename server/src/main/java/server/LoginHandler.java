@@ -9,11 +9,10 @@ import spark.Response;
 import spark.Route;
 
 public class LoginHandler implements Route {
-    private final UserDAO userDAO;
-    private final AuthDAO authDAO;
+    private final MemoryUserDAO userDAO;
+    private final MemoryAuthDAO authDAO;
 
-
-    public LoginHandler(UserDAO userDAO, AuthTokenDAO authDAO) {
+    public LoginHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }

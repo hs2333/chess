@@ -11,14 +11,9 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         //register endpoints
-        //var userDAO = new MemoryUserDAO();
-        //var authDAO = new MemoryAuthDAO();
-        //var gameDAO = new MemoryGameDAO();
-
-        UserDAO userDAO = new MySqlUserDAO();
-        AuthTokenDAO authDAO = new MySqlAuthTokenDAO();
-        GameDAO gameDAO = new MySqlGameDAO();
-
+        var userDAO = new MemoryUserDAO();
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
 
         //add handlers
         Spark.post("/user", new RegisterHandler(userDAO, authDAO));

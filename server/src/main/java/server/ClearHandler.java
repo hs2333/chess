@@ -10,12 +10,11 @@ import spark.Route;
 import java.util.Map;
 
 public class ClearHandler implements Route {
-    private final UserDAO userDAO;
-    private final AuthTokenDAO authDAO;
-    private final GameDAO gameDAO;
+    private final MemoryUserDAO userDAO;
+    private final MemoryAuthDAO authDAO;
+    private final MemoryGameDAO gameDAO;
 
-
-    public ClearHandler(UserDAO userDAO, AuthTokenDAO authDAO, GameDAO gameDAO) {
+    public ClearHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;

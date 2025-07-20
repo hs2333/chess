@@ -9,10 +9,9 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 public class LogoutHandler implements Route {
-    private final UserDAO userDAO;
-    private final AuthTokenDAO authDAO;
-
-    public LogoutHandler(UserDAO userDAO, AuthTokenDAO authDAO) {
+    private final MemoryUserDAO userDAO;
+    private final MemoryAuthDAO authDAO;
+    public LogoutHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }

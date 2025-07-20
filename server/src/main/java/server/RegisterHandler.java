@@ -11,10 +11,9 @@ import spark.Route;
 import java.util.Map;
 
 public class RegisterHandler implements Route {
-    private final UserDAO  userDAO;
-    private final AuthTokenDAO  authDAO;
-    
-    public RegisterHandler(UserDAO userDAO, AuthTokenDAO authDAO) {
+    private final MemoryUserDAO userDAO;
+    private final MemoryAuthDAO authDAO;
+    public RegisterHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
