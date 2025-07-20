@@ -1,11 +1,13 @@
 package dataaccess;
 
 import model.GameData;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MemoryGameDAO {
+public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> games = new HashMap<>();
     private final AtomicInteger nextId = new AtomicInteger(1);
 
@@ -22,11 +24,9 @@ public class MemoryGameDAO {
         return id;
     }
 
-    //public GameData getGame(int id) {return games.get(id);}
+    public GameData getGame(int id) {return games.get(id);}
 
-    public Map<Integer, GameData> listGames() {
-        return games;
-    }
+    public Collection<GameData> listGames() { return games.values(); }
 
     public void joinGame(int gameID, String username, String color) throws DataAccessException {
         //get game from the map
@@ -49,6 +49,11 @@ public class MemoryGameDAO {
         } else {
             throw new DataAccessException("Error: bad request");
         }
+    }
+
+    @Override
+    public void updateGame(GameData game) {
+        games.put(game.gameID(), game);
     }
 
 }

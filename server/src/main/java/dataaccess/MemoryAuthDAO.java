@@ -3,10 +3,10 @@ package dataaccess;
 import model.AuthData;
 import java.util.HashMap;
 
-public class MemoryAuthDAO {
+public class MemoryAuthDAO implements AuthDAO {
     private final HashMap<String, AuthData> tokens = new HashMap<>();
-    //insertAuth
-    public void insertAuth(AuthData auth) {
+    //createAuth
+    public void createAuth(AuthData auth) {
         tokens.put(auth.authToken(), auth);
     }
 
