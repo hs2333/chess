@@ -18,10 +18,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     //Game
-    public int createGame(GameData game) {
+    public GameData createGame(GameData game) {
         int id = nextId.getAndIncrement();
-        games.put(id, game);
-        return id;
+        GameData newGame = new GameData(id, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+        games.put(id, newGame);
+        return newGame;
     }
 
     public GameData getGame(int id) {return games.get(id);}

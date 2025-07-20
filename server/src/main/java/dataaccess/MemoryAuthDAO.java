@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class MemoryAuthDAO implements AuthDAO {
     private final HashMap<String, AuthData> tokens = new HashMap<>();
     //createAuth
-    public void createAuth(AuthData auth) {
+    public void insertAuth(AuthData auth) {
         tokens.put(auth.authToken(), auth);
     }
 
