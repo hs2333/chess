@@ -1,32 +1,27 @@
 package server;
 
-import dataaccess.*;
-import service.UserService;
+import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import service.UserService;
+import dataaccess.DataAccessException;
+
 import java.util.Map;
-import com.google.gson.Gson;
 
 public class LogoutHandler implements Route {
-    private final MemoryUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
-    public LogoutHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
-        this.userDAO = userDAO;
-        this.authDAO = authDAO;
-    }
-
     @Override
     public Object handle(Request req, Response res) {
-        var token = req.headers("Authorization");
-        var service = new UserService(userDAO, authDAO);
+        var serializer = new Gson();
         try {
+            String token = req.headers("Authorization");
+            var service = new UserService();
             service.logout(token);
             res.status(200);
             return "{}";
-        } catch (DataAccessException e) {
+        } catch (DataAccessException exception) {
             res.status(401);
-            return new Gson().toJson(Map.of("message", e.getMessage()));
+            return serializer.toJson(Map.of("message", exception.getMessage()));
         }
     }
 }

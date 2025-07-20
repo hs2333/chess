@@ -1,27 +1,21 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.*;
-import service.GameService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import service.GameService;
+import dataaccess.DataAccessException;
+
 import java.util.Map;
 
 public class ListGamesHandler implements Route {
-    private final MemoryGameDAO gameDAO;
-    private final MemoryAuthDAO authDAO;
-    public ListGamesHandler(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO) {
-        this.gameDAO = gameDAO;
-        this.authDAO = authDAO;
-    }
-
     @Override
-    public Object handle(Request req, Response res) throws Exception {
+    public Object handle(Request req, Response res) {
         var serializer = new Gson();
         try {
             String token = req.headers("Authorization");
-            var service = new GameService(gameDAO, authDAO);
+            var service = new GameService();
             var result = service.listGames(token);
             res.status(200);
             return serializer.toJson(result);
