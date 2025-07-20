@@ -5,15 +5,8 @@ import dataaccess.*;
 import model.*;
 
 public class GameService {
-    private final GameDAO  gameDAO;
-    private final AuthTokenDAO  authDAO;
-
-    public GameService(GameDAO gameDAO, AuthTokenDAO authDAO) {
-        //games
-        this.gameDAO = gameDAO;
-        //authentication tokens
-        this.authDAO = authDAO;
-    }
+    private final GameDAO gameDAO = DataAccessFactory.getGameDAO();
+    private final AuthDAO authDAO = DataAccessFactory.getAuthDAO();
 
     public CreateGameResult createGame(String token, CreateGameRequest req) throws DataAccessException {
         if (token == null || !authDAO.isValidToken(token)) {
@@ -23,32 +16,47 @@ public class GameService {
             throw new DataAccessException("Error: bad request");
         }
 
-        var username = authDAO.getAuth(token).username();
         var newGame = new GameData(0, null, null, req.gameName(), new ChessGame());
-        int id = gameDAO.createGame(newGame);
-        return new CreateGameResult(id);
+        GameData storedGame = gameDAO.createGame(newGame);
+        return new CreateGameResult(storedGame.gameID());
     }
 
     public ListGamesResult listGames(String token) throws DataAccessException {
         if (token == null || !authDAO.isValidToken(token)) {
             throw new DataAccessException("Error: unauthorized");
         }
-        return new ListGamesResult(gameDAO.listGames().values());
+        return new ListGamesResult(gameDAO.listGames());
     }
 
     public void joinGame(String token, JoinGameRequest req) throws DataAccessException {
-        //check token valid
         if (token == null || !authDAO.isValidToken(token)) {
             throw new DataAccessException("Error: unauthorized");
         }
-        //check join request
         if (req.playerColor() == null || req.gameID() <= 0) {
             throw new DataAccessException("Error: bad request");
         }
 
         String username = authDAO.getAuth(token).username();
-        gameDAO.joinGame(req.gameID(), username, req.playerColor());
+        GameData game = gameDAO.getGame(req.gameID());
+
+        if (game == null) {
+            throw new DataAccessException("Error: game not found");
+        }
+
+        if ("WHITE".equalsIgnoreCase(req.playerColor())) {
+            if (game.whiteUsername() != null) {
+                throw new DataAccessException("Error: already taken");
+            }
+            game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+        } else if ("BLACK".equalsIgnoreCase(req.playerColor())) {
+            if (game.blackUsername() != null) {
+                throw new DataAccessException("Error: already taken");
+            }
+            game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+        } else {
+            throw new DataAccessException("Error: invalid color");
+        }
+
+        gameDAO.updateGame(game);
     }
-
-
 }

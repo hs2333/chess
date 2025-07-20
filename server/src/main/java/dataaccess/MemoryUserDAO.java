@@ -3,7 +3,7 @@ package dataaccess;
 import model.UserData;
 import java.util.HashMap;
 
-public class MemoryUserDAO implements UserDAO{
+public class MemoryUserDAO implements UserDAO {
     private final HashMap<String, UserData> users = new HashMap<>();
     public void insertUser(UserData user) throws DataAccessException {
         if (users.containsKey(user.username())) {
@@ -17,10 +17,24 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public boolean validateUser(String username, String password) {
-        UserData u = users.get(username);
-        return u != null && u.password().equals(password);
+    public boolean validateUser(String username, String password) throws DataAccessException {
+        boolean exist = false;
+        for (UserData user : users.values()) {
+            if (user.username().equals(username)) {
+                exist = true;
+                if (user.password().equals(password)) {
+                    return true;
+                }
+            }}
+        //incorrect password
+        if (exist) {
+            return false;
+        } else {
+            throw new DataAccessException("User does not exist: " + username);
+        }
     }
+
+
 
     public void clear() {
         users.clear();
