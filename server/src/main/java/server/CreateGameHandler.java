@@ -30,7 +30,8 @@ public class CreateGameHandler implements Route {
             } else {
                 res.status(400);
             }
-            return serializer.toJson(Map.of("message", exception.getMessage() != null ? exception.getMessage() : "Server error"));
+            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "An unknown error occurred.";
+            return serializer.toJson(Map.of("message", "Error: " + errorMessage));
         }
     }
 }

@@ -10,7 +10,7 @@ public class DatabaseInitializer {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Create user table
+            //create user table
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS user (
                     username     VARCHAR(255) PRIMARY KEY,
@@ -19,7 +19,8 @@ public class DatabaseInitializer {
                 );
             """);
 
-            // Create auth table
+
+            //create auth table
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS auth (
                     token        VARCHAR(255) PRIMARY KEY,
@@ -28,7 +29,8 @@ public class DatabaseInitializer {
                 );
             """);
 
-            // Create game table
+
+            //create game table
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS game (
                     id           INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,6 +43,7 @@ public class DatabaseInitializer {
                 );
             """);
 
+            
         } catch (SQLException e) {
             throw new DataAccessException("Failed to initialize database", e);
         }
