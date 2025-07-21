@@ -27,7 +27,7 @@ public class LoginHandler implements Route {
             } else {
                 res.status(401);
             }
-            return serializer.toJson(Map.of("message", exception.getMessage()));
+            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
         }
     }
 }

@@ -21,16 +21,17 @@ public class JoinGameHandler implements Route {
             var service = new GameService();
             service.joinGame(token, joinRequest);
             res.status(200);
-            return "{}";
-        } catch (DataAccessException e) {
-            if (e.getCause() instanceof SQLException) {
+            Map<String, String> responseBody = Map.of("message", "Error join game");
+            return serializer.toJson(responseBody);
+        } catch (DataAccessException exception) {
+            if (exception.getCause() instanceof SQLException) {
                 res.status(500);
-            } else if (e.getMessage().contains("unauthorized")) {
+            } else if (exception.getMessage().contains("unauthorized")) {
                 res.status(401);
             } else {
                 res.status(403);
             }
-            return serializer.toJson(Map.of("message", e.getMessage()));
+            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
         }
     }
 }

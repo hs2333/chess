@@ -22,15 +22,15 @@ public class CreateGameHandler implements Route {
             var result = service.createGame(token, gameRequest);
             res.status(200);
             return serializer.toJson(result);
-        } catch (DataAccessException e) {
-            if (e.getCause() instanceof SQLException) {
+        } catch (DataAccessException exception) {
+            if (exception.getCause() instanceof SQLException) {
                 res.status(500);
-            } else if (e.getMessage().contains("unauthorized")) {
+            } else if (exception.getMessage().contains("unauthorized")) {
                 res.status(401);
             } else {
                 res.status(400);
             }
-            return serializer.toJson(Map.of("message", e.getMessage()));
+            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
         }
     }
 }

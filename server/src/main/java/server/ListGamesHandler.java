@@ -20,13 +20,13 @@ public class ListGamesHandler implements Route {
             var result = service.listGames(token);
             res.status(200);
             return serializer.toJson(result);
-        } catch (DataAccessException e) {
-            if (e.getCause() instanceof SQLException) {
+        } catch (DataAccessException exception) {
+            if (exception.getCause() instanceof SQLException) {
                 res.status(500);
             } else {
                 res.status(401);
             }
-            return serializer.toJson(Map.of("message", e.getMessage()));
+            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
         }
     }
 }

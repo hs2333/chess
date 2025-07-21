@@ -19,14 +19,15 @@ public class LogoutHandler implements Route {
             var service = new UserService();
             service.logout(token);
             res.status(200);
-            return "{}";
+            Map<String, String> responseBody = Map.of("message", "Error during logout");
+            return serializer.toJson(responseBody);
         } catch (DataAccessException exception) {
             if (exception.getCause() instanceof SQLException) {
                 res.status(500);
             } else {
                 res.status(401);
             }
-            return serializer.toJson(Map.of("message", exception.getMessage()));
+            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
         }
     }
 }
