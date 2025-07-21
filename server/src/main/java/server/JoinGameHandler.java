@@ -8,6 +8,7 @@ import service.GameService;
 import model.JoinGameRequest;
 import dataaccess.DataAccessException;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class JoinGameHandler implements Route {
@@ -22,7 +23,13 @@ public class JoinGameHandler implements Route {
             res.status(200);
             return "{}";
         } catch (DataAccessException e) {
-            res.status(e.getMessage().contains("unauthorized") ? 401 : 403);
+            if (e.getCause() instanceof SQLException) {
+                res.status(500);
+            } else if (e.getMessage().contains("unauthorized")) {
+                res.status(401);
+            } else {
+                res.status(403);
+            }
             return serializer.toJson(Map.of("message", e.getMessage()));
         }
     }

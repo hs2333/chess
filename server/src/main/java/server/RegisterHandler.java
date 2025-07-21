@@ -8,6 +8,7 @@ import service.UserService;
 import model.RegisterRequest;
 import dataaccess.DataAccessException;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class RegisterHandler implements Route {
@@ -21,7 +22,13 @@ public class RegisterHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            res.status(exception.getMessage().contains("taken") ? 403 : 400);
+            if (exception.getCause() instanceof SQLException) {
+                res.status(500);
+            } else if (exception.getMessage().contains("taken")) {
+                res.status(403);
+            } else {
+                res.status(400);
+            }
             return serializer.toJson(Map.of("message", exception.getMessage()));
         }
     }

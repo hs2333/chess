@@ -7,6 +7,7 @@ import spark.Route;
 import service.UserService;
 import dataaccess.DataAccessException;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class LogoutHandler implements Route {
@@ -20,7 +21,11 @@ public class LogoutHandler implements Route {
             res.status(200);
             return "{}";
         } catch (DataAccessException exception) {
-            res.status(401);
+            if (exception.getCause() instanceof SQLException) {
+                res.status(500);
+            } else {
+                res.status(401);
+            }
             return serializer.toJson(Map.of("message", exception.getMessage()));
         }
     }

@@ -1,11 +1,12 @@
 package dataaccess;
-
 import model.UserData;
 import java.sql.*;
 
+//similar to MemoryXDAO
 public class MySqlUserDAO implements UserDAO {
 
     @Override
+    //inserts a new user into the database
     public void insertUser(UserData user) throws DataAccessException {
         var sql = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
@@ -20,6 +21,7 @@ public class MySqlUserDAO implements UserDAO {
     }
 
     @Override
+    //retrieves a user from the database by username
     public UserData getUser(String username) throws DataAccessException {
         var sql = "SELECT * FROM user WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -38,6 +40,7 @@ public class MySqlUserDAO implements UserDAO {
     }
 
     @Override
+    //check validateUser
     public boolean validateUser(String username, String password) throws DataAccessException {
             var sql = "SELECT password FROM user WHERE username = ?";
 
@@ -63,6 +66,7 @@ public class MySqlUserDAO implements UserDAO {
         }
 
     @Override
+    //clear all users from the user table
     public void clear() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement("DELETE FROM user")) {

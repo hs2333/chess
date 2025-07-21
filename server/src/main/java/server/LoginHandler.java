@@ -8,6 +8,7 @@ import service.UserService;
 import model.LoginRequest;
 import dataaccess.DataAccessException;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class LoginHandler implements Route {
@@ -21,7 +22,11 @@ public class LoginHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            res.status(401);
+            if (exception.getCause() instanceof SQLException) {
+                res.status(500);
+            } else {
+                res.status(401);
+            }
             return serializer.toJson(Map.of("message", exception.getMessage()));
         }
     }

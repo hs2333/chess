@@ -7,6 +7,7 @@ import spark.Route;
 import service.GameService;
 import dataaccess.DataAccessException;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class ListGamesHandler implements Route {
@@ -20,7 +21,11 @@ public class ListGamesHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException e) {
-            res.status(401);
+            if (e.getCause() instanceof SQLException) {
+                res.status(500);
+            } else {
+                res.status(401);
+            }
             return serializer.toJson(Map.of("message", e.getMessage()));
         }
     }

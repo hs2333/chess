@@ -1,16 +1,17 @@
 package dataaccess;
-
 import model.GameData;
 import java.sql.*;
 import java.util.*;
-
 import com.google.gson.Gson;
 
+//similar to MemoryXDAO
+//MySQL implementation of the GameDAO interface
 public class MySqlGameDAO implements GameDAO {
 
     private final Gson gson = new Gson();
 
     @Override
+    //inserts a new game record into the database
     public GameData createGame(GameData game) throws DataAccessException {
         var sql = "INSERT INTO game (gameName, whiteUsername, blackUsername, gameJSON) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
@@ -36,6 +37,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
+    //retrieves a specific game by its ID
     public GameData getGame(int gameID) throws DataAccessException {
         var sql = "SELECT * FROM game WHERE id = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -55,6 +57,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
+    //returns a collection of all games currently stored in the database
     public Collection<GameData> listGames() throws DataAccessException {
         var sql = "SELECT * FROM game";
         var games = new ArrayList<GameData>();
@@ -73,6 +76,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
+    //updates the existing game information in the database
     public void updateGame(GameData game) throws DataAccessException {
         var sql = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameJSON = ? WHERE id = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -89,6 +93,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
+    //call records from the game table in the database
     public void clear() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement("DELETE FROM game")) {
