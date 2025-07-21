@@ -31,7 +31,7 @@ public class JoinGameHandler implements Route {
             } else {
                 res.status(403);
             }
-            return serializer.toJson(Map.of("Error message: ", (exception.getMessage() != null) ? exception.getMessage() : "Server error"));
+            return serializer.toJson(Map.of("message", exception.getMessage() != null ? exception.getMessage() : "Server error"));
         }
     }
 }

@@ -17,10 +17,10 @@ public class ClearHandler implements Route {
             var service = new ClearService();
             service.clear();
             res.status(200);
-            return "{}";
-        } catch (DataAccessException e) {
+            return serializer.toJson(Map.of("message:", "Error clearing database"));
+        } catch (DataAccessException exception) {
             res.status(500);
-            return serializer.toJson(Map.of("message", "Error clearing database"));
+            return serializer.toJson(Map.of("message", exception.getMessage() != null ? exception.getMessage() : "Server error"));
         }
     }
 }
