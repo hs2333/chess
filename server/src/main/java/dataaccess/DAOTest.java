@@ -16,7 +16,15 @@ public class DAOTest {
     private final AuthDAO authDAO = new MySqlAuthDAO();
     private final GameDAO gameDAO = new MySqlGameDAO();
 
-    
+    @BeforeAll
+    static void setUp() {
+        try {
+            DatabaseInitializer.initialize();
+        } catch (DataAccessException e) {
+            fail("Failed to initialize database: " + e.getMessage());
+        }
+    }
+
 
     @BeforeEach
     public void clearAll() throws DataAccessException {
@@ -112,11 +120,15 @@ public class DAOTest {
 
     @Test
     public void updateGame_whitePlayer() throws DataAccessException {
+        userDAO.insertUser(new UserData("someone", "password", "someone@email.com"));
+
         var game = gameDAO.createGame(new GameData(0, null, null, "G", new ChessGame()));
-        var updated = new GameData(game.gameID(), "whitePlayer", null, game.gameName(), game.game());
+
+        var updated = new GameData(game.gameID(), "someone", null, game.gameName(), game.game());
         gameDAO.updateGame(updated);
-        assertEquals("whitePlayer", gameDAO.getGame(game.gameID()).whiteUsername());
+        assertEquals("someone", gameDAO.getGame(game.gameID()).whiteUsername());
     }
+
 
     @Test
     public void getGame_notFound() throws DataAccessException {
