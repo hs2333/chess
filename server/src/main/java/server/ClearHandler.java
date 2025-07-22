@@ -30,9 +30,7 @@ public class ClearHandler implements Route {
             res.status(200);
             return serializer.toJson(Map.of("message:", "Error clearing database"));
         } catch (DataAccessException exception) {
-            res.status(500);
-            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "An unknown error occurred.";
-            return serializer.toJson(Map.of("message", "Error: " + errorMessage));
+            return ServerHelp.handleDataAccessException(exception, res, serializer);
         }
     }
 }

@@ -30,15 +30,7 @@ public class RegisterHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            if (exception.getCause() instanceof SQLException) {
-                res.status(500);
-            } else if (exception.getMessage().contains("taken")) {
-                res.status(403);
-            } else {
-                res.status(400);
-            }
-            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "An unknown error occurred.";
-            return serializer.toJson(Map.of("message", "Error: " + errorMessage));
+            return ServerHelp.handleDataAccessException(exception, res, serializer);
         }
     }
 }

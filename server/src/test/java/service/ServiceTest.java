@@ -11,16 +11,17 @@ public class ServiceTest {
     private UserService userService;
     private GameService gameService;
     private ClearService clearService;
-    private MemoryUserDAO userDAO;
-    private MemoryAuthDAO authDAO;
-    private MemoryGameDAO gameDAO;
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
+
 
     //set up
     @BeforeEach
     public void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
-        gameDAO = new MemoryGameDAO();
+        DataAccessFactory.configure(false); // memory mode
+        DataAccessFactory.resetMemoryDAOs();
+
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
         clearService = new ClearService(userDAO, authDAO, gameDAO);
@@ -39,6 +40,7 @@ public class ServiceTest {
 
     @Test
     public void testRegisterNegative() {
+
         RegisterRequest request = new RegisterRequest("testUser", "password", "email@example.com");
         assertDoesNotThrow(() -> userService.register(request));
         assertThrows(DataAccessException.class, () -> userService.register(request));

@@ -33,15 +33,7 @@ public class JoinGameHandler implements Route {
             Map<String, String> responseBody = Map.of("message", "Error join game");
             return serializer.toJson(responseBody);
         } catch (DataAccessException exception) {
-            if (exception.getCause() instanceof SQLException) {
-                res.status(500);
-            } else if (exception.getMessage().contains("unauthorized")) {
-                res.status(401);
-            } else {
-                res.status(403);
-            }
-            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "An unknown error occurred.";
-            return serializer.toJson(Map.of("message", "Error: " + errorMessage));
+            return ServerHelp.handleDataAccessException(exception, res, serializer);
         }
     }
 }
