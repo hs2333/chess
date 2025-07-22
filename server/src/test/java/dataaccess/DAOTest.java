@@ -36,13 +36,17 @@ public class DAOTest {
         userDAO.clear();
     }
 
+    private void insertHashedUser(String username, String password, String email) throws DataAccessException {
+        var hashed = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
+        userDAO.insertUser(new UserData(username, hashed, email));
+    }
 
     //UserDAO Tests
     @Test
     public void insertUserPositive() throws DataAccessException {
-        var user = new UserData("alice", "pass123", "a@x.com");
+        var user = new UserData("aaa", "pw1", "a@x.com");
         userDAO.insertUser(user);
-        assertNotNull(userDAO.getUser("alice"));
+        assertNotNull(userDAO.getUser("aaa"));
     }
 
     @Test
@@ -52,24 +56,20 @@ public class DAOTest {
 
     @Test
     public void insertUserNegative() throws DataAccessException {
-        var user = new UserData("bob", "pw", "b@x.com");
+        var user = new UserData("bbb", "pw2", "b@x.com");
         userDAO.insertUser(user);
         assertThrows(DataAccessException.class, () -> userDAO.insertUser(user));
     }
 
     @Test
     public void validateUserPositive() throws DataAccessException {
-        var hashed = org.mindrot.jbcrypt.BCrypt.hashpw("secret", org.mindrot.jbcrypt.BCrypt.gensalt());
-        var user = new UserData("carol", hashed, "c@x.com");
-        userDAO.insertUser(user);
-        assertTrue(userDAO.validateUser("carol", "secret"));
+        insertHashedUser("ccc", "secret", "c@x.com");
+        assertTrue(userDAO.validateUser("ccc", "secret"));
     }
     @Test
     public void validateUseNegativeWrongPassword() throws DataAccessException {
-        var hashed = org.mindrot.jbcrypt.BCrypt.hashpw("secret", org.mindrot.jbcrypt.BCrypt.gensalt());
-        var user = new UserData("dave", hashed, "d@x.com");
-        userDAO.insertUser(user);
-        assertFalse(userDAO.validateUser("dave", "wrong"));
+        insertHashedUser("ddd", "secret", "d@x.com");
+        assertFalse(userDAO.validateUser("ddd", "wrong"));
     }
     @Test
     public void validateUserNegativeNotFound() {
@@ -80,7 +80,7 @@ public class DAOTest {
     //AuthDAO Tests
     @Test
     public void insertAuthPositive() throws DataAccessException {
-        userDAO.insertUser(new UserData("user", "p", "e")); // FK dependency
+        userDAO.insertUser(new UserData("user", "pw", "e")); // FK dependency
         var token = new AuthData("token123", "user");
         authDAO.insertAuth(token);
         assertTrue(authDAO.isValidToken("token123"));
