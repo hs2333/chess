@@ -10,8 +10,6 @@ public class Main {
         System.out.println("♕ 240 Chess Server: " + piece);
 
         //connnect to server
-        //Server server = new Server();
-        //server.run(8080);     }
         try {
             DatabaseInitializer.initialize();  // ← Ensure tables exist
         } catch (DataAccessException e) {
@@ -19,15 +17,6 @@ public class Main {
             return;
         }
 
-        Spark.port(8080);
-        Spark.staticFiles.location("/web");
-
-        Spark.delete("/db", new ClearHandler());
-        Spark.post("/user", new RegisterHandler());
-        Spark.post("/session", new LoginHandler());
-        Spark.delete("/session", new LogoutHandler());
-        Spark.post("/game", new CreateGameHandler());
-        Spark.get("/game", new ListGamesHandler());
-        Spark.put("/game", new JoinGameHandler());
-    }
+        Server server = new Server();
+        server.run(8080);}
 }

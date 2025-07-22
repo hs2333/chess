@@ -5,8 +5,13 @@ import dataaccess.*;
 import model.*;
 
 public class GameService {
-    private final GameDAO gameDAO = DataAccessFactory.getGameDAO();
-    private final AuthDAO authDAO = DataAccessFactory.getAuthDAO();
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
+
+    public GameService(GameDAO gameDAO, AuthDAO authDAO) {
+        this.authDAO = DataAccessFactory.getAuthDAO();
+        this.gameDAO = DataAccessFactory.getGameDAO();
+    }
 
     public CreateGameResult createGame(String token, CreateGameRequest req) throws DataAccessException {
         if (token == null || !authDAO.isValidToken(token)) {
@@ -29,9 +34,11 @@ public class GameService {
     }
 
     public void joinGame(String token, JoinGameRequest req) throws DataAccessException {
+        //check token valid
         if (token == null || !authDAO.isValidToken(token)) {
             throw new DataAccessException("Error: unauthorized");
         }
+        //check join request
         if (req.playerColor() == null || req.gameID() <= 0) {
             throw new DataAccessException("Error: bad request");
         }

@@ -3,9 +3,16 @@ package service;
 import dataaccess.*;
 
 public class ClearService {
-    private final UserDAO userDAO = DataAccessFactory.getUserDAO();
-    private final AuthDAO authDAO = DataAccessFactory.getAuthDAO();
-    private final GameDAO gameDAO = DataAccessFactory.getGameDAO();
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
+
+    //ClearService
+    public ClearService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
+        this.userDAO = DataAccessFactory.getUserDAO();
+        this.authDAO = DataAccessFactory.getAuthDAO();
+        this.gameDAO = DataAccessFactory.getGameDAO();
+    }
 
     //just clear
     public void clear() throws DataAccessException {
@@ -13,8 +20,8 @@ public class ClearService {
             userDAO.clear();
             authDAO.clear();
             gameDAO.clear();
-        } catch (Exception e) {
-            throw new DataAccessException("Error: failed to clear database", e);
+        } catch (Exception exception) {
+            throw new DataAccessException("Error: failed to clear database", exception);
         }
     }
 }

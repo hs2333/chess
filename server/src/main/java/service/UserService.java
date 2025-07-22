@@ -6,15 +6,21 @@ import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
-    private final UserDAO userDAO = DataAccessFactory.getUserDAO();
-    private final AuthDAO authDAO = DataAccessFactory.getAuthDAO();
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
+
+    public UserService(UserDAO userDAO, AuthDAO authDAO) {
+        //user data
+        this.userDAO = DataAccessFactory.getUserDAO();
+        //authentication token
+        this.authDAO = DataAccessFactory.getAuthDAO();
+    }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
+        //check missing fields
         if (req.username() == null || req.password() == null || req.email() == null) {
             throw new DataAccessException("Error: bad request");
-        }
-
-        if (userDAO.getUser(req.username()) != null) {
+        } if (userDAO.getUser(req.username()) != null) {
             throw new DataAccessException("Error: already taken");
         }
 
@@ -37,7 +43,7 @@ public class UserService {
         if (!valid) {
             throw new DataAccessException("Error: unauthorized");
         }
-
+        //new auth token
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(token, req.username()));
         return new LoginResult(req.username(), token);

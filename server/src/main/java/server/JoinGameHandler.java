@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.*;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -12,13 +13,21 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class JoinGameHandler implements Route {
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
+
+    public JoinGameHandler(GameDAO gameDAO, AuthDAO authDAO) {
+        this.authDAO = DataAccessFactory.getAuthDAO();
+        this.gameDAO = DataAccessFactory.getGameDAO();
+    }
+
     @Override
     public Object handle(Request req, Response res) {
         var serializer = new Gson();
         try {
             String token = req.headers("Authorization");
             var joinRequest = serializer.fromJson(req.body(), JoinGameRequest.class);
-            var service = new GameService();
+            var service = new GameService(gameDAO, authDAO);
             service.joinGame(token, joinRequest);
             res.status(200);
             Map<String, String> responseBody = Map.of("message", "Error join game");
