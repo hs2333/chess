@@ -8,30 +8,30 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MemoryGameDAO implements GameDAO {
-    private static final Map<Integer, GameData> games = new HashMap<>();
-    private static final AtomicInteger nextId = new AtomicInteger(1);
+    private static final Map<Integer, GameData> GAMES = new HashMap<>();
+    private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 
     //clear
     public void clear() {
-        games.clear();
-        nextId.set(1);
+        GAMES.clear();
+        NEXT_ID.set(1);
     }
 
     //Game
     public GameData createGame(GameData game) {
-        int id = nextId.getAndIncrement();
+        int id = NEXT_ID.getAndIncrement();
         GameData newGame = new GameData(id, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
-        games.put(id, newGame);
+        GAMES.put(id, newGame);
         return newGame;
     }
 
-    public GameData getGame(int id) {return games.get(id);}
+    public GameData getGame(int id) {return GAMES.get(id);}
 
-    public Collection<GameData> listGames() { return games.values(); }
+    public Collection<GameData> listGames() { return GAMES.values(); }
 
     public void joinGame(int gameID, String username, String color) throws DataAccessException {
         //get game from the map
-        GameData game = games.get(gameID);
+        GameData game = GAMES.get(gameID);
         if (game == null)
         {throw new DataAccessException("Error: bad request");}
         //handle joining (white)
@@ -39,14 +39,14 @@ public class MemoryGameDAO implements GameDAO {
             if (game.whiteUsername() != null)
             {throw new DataAccessException("Error: already taken");}
             //update (new white)
-            games.put(gameID, new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
+            GAMES.put(gameID, new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
         }
         //handle joining (black)
         else if ("BLACK".equalsIgnoreCase(color)) {
             if (game.blackUsername() != null)
             {throw new DataAccessException("Error: already taken");}
             //update (new black)
-            games.put(gameID, new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
+            GAMES.put(gameID, new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
         } else {
             throw new DataAccessException("Error: bad request");
         }
@@ -54,7 +54,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData game) {
-        games.put(game.gameID(), game);
+        GAMES.put(game.gameID(), game);
     }
 
 }

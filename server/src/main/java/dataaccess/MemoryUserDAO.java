@@ -6,22 +6,22 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO {
-    private static final HashMap<String, UserData> users = new HashMap<>();
+    private static final HashMap<String, UserData> USERS = new HashMap<>();
     public void insertUser(UserData user) throws DataAccessException {
-        if (users.containsKey(user.username())) {
+        if (USERS.containsKey(user.username())) {
             throw new DataAccessException("Error: already taken");
         }
-        users.put(user.username(), user);
+        USERS.put(user.username(), user);
     }
 
     public UserData getUser(String username) {
-        return users.get(username);
+        return USERS.get(username);
     }
 
     @Override
     public boolean validateUser(String username, String password) throws DataAccessException {
         boolean exist = false;
-        for (UserData user : users.values()) {
+        for (UserData user : USERS.values()) {
             if (user.username().equals(username)) {
                 exist = true;
 //                System.out.println("Stored password: " + user.password());
@@ -39,6 +39,6 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     public void clear() {
-        users.clear();
+        USERS.clear();
     }
 }

@@ -3,9 +3,9 @@ package dataaccess;
 public class DataAccessFactory {
     private static boolean USE_SQL = true; // set to false for memory mode
 
-    private static final MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-    private static final MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-    private static final MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+    private static final MemoryUserDAO MUDAO = new MemoryUserDAO();
+    private static final MemoryAuthDAO MADAO = new MemoryAuthDAO();
+    private static final MemoryGameDAO MGDAO = new MemoryGameDAO();
 
     public static void configure(boolean useSqlPersistence) {
         USE_SQL = useSqlPersistence;
@@ -26,8 +26,8 @@ public class DataAccessFactory {
     }
 
     public static void resetMemoryDAOs() {
-        memoryUserDAO.clear();
-        memoryAuthDAO.clear();
-        memoryGameDAO.clear();
+        MUDAO.clear();
+        MADAO.clear();
+        MGDAO.clear();
     }
 }
