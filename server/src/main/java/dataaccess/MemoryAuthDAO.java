@@ -4,7 +4,7 @@ import model.AuthData;
 import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO {
-    private final HashMap<String, AuthData> tokens = new HashMap<>();
+    private static final HashMap<String, AuthData> tokens = new HashMap<>();
     //insertAuth
     public void insertAuth(AuthData auth) {
         tokens.put(auth.authToken(), auth);
@@ -19,6 +19,7 @@ public class MemoryAuthDAO implements AuthDAO {
     public void clear() {
         tokens.clear();
     }
+
     public void deleteAuth(String token) {
         tokens.remove(token);
     }

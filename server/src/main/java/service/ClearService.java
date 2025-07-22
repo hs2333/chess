@@ -17,11 +17,16 @@ public class ClearService {
     //just clear
     public void clear() throws DataAccessException {
         try {
-            userDAO.clear();
-            authDAO.clear();
-            gameDAO.clear();
-        } catch (Exception exception) {
-            throw new DataAccessException("Error: failed to clear database", exception);
+            if (DataAccessFactory.usingSQL()) {
+                userDAO.clear();
+                authDAO.clear();
+                gameDAO.clear();
+            } else {
+                DataAccessFactory.resetMemoryDAOs();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Error: failed to clear database", e);
         }
     }
 }
+

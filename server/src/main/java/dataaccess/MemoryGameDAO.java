@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MemoryGameDAO implements GameDAO {
-    private final Map<Integer, GameData> games = new HashMap<>();
-    private final AtomicInteger nextId = new AtomicInteger(1);
+    private static final Map<Integer, GameData> games = new HashMap<>();
+    private static final AtomicInteger nextId = new AtomicInteger(1);
 
     //clear
     public void clear() {

@@ -1,7 +1,19 @@
 package dataaccess;
 
 public class DataAccessFactory {
-    private static final boolean USE_SQL = true; // set to false for memory mode
+    private static boolean USE_SQL = true; // set to false for memory mode
+
+    private static final MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
+    private static final MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+    private static final MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+
+    public static void configure(boolean useSqlPersistence) {
+        USE_SQL = useSqlPersistence;
+    }
+
+    public static boolean usingSQL() {
+        return USE_SQL;
+    }
 
     public static UserDAO getUserDAO() {
         return USE_SQL ? new MySqlUserDAO() : new MemoryUserDAO();
@@ -11,5 +23,11 @@ public class DataAccessFactory {
     }
     public static GameDAO getGameDAO() {
         return USE_SQL ? new MySqlGameDAO() : new MemoryGameDAO();
+    }
+
+    public static void resetMemoryDAOs() {
+        memoryUserDAO.clear();
+        memoryAuthDAO.clear();
+        memoryGameDAO.clear();
     }
 }
