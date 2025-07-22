@@ -1,6 +1,8 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO {
@@ -22,7 +24,9 @@ public class MemoryUserDAO implements UserDAO {
         for (UserData user : users.values()) {
             if (user.username().equals(username)) {
                 exist = true;
-                if (user.password().equals(password)) {
+//                System.out.println("Stored password: " + user.password());
+//                System.out.println("Provided password: " + password);
+                if (BCrypt.checkpw(password, user.password())) {
                     return true;
                 }
             }}

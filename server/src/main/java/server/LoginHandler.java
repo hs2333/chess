@@ -6,7 +6,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import service.UserService;
-import model.LoginRequest;
+import model.*;
 import dataaccess.*;
 
 import java.sql.SQLException;
@@ -31,7 +31,15 @@ public class LoginHandler implements Route {
             res.status(200);
             return serializer.toJson(result);
         } catch (DataAccessException exception) {
-            return ServerHelp.handleDataAccessException(exception, res, serializer);
+            if (exception.getCause() instanceof SQLException) {
+                res.status(500);
+            } else if (exception.getMessage().toLowerCase().contains("unauthorized") ||
+                    exception.getMessage().toLowerCase().contains("does not exist")) {
+                res.status(401);}
+            else
+            {res.status(400);}
+            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "Error occurred.";
+            return serializer.toJson(Map.of("message", "Error: " + errorMessage));
         }
     }
 }

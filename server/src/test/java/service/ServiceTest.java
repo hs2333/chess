@@ -18,10 +18,12 @@ public class ServiceTest {
 
     //set up
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         DataAccessFactory.configure(false); // memory mode
         DataAccessFactory.resetMemoryDAOs();
-
+        //reset my SQL, clear the whole database
+        clearService = new ClearService(userDAO, authDAO, gameDAO);
+        clearService.clear();
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
         clearService = new ClearService(userDAO, authDAO, gameDAO);
