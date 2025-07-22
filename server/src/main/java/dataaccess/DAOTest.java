@@ -133,9 +133,8 @@ public class DAOTest {
         assertNotNull(gameDAO.getGame(created.gameID()));
     }
     @Test
-    public void createGameNegative() {
-        assertThrows(DataAccessException.class, () -> {
-            gameDAO.createGame(null);});
+    public void createGame_negative() {
+        assertThrows(DataAccessException.class, () -> gameDAO.createGame(null));
     }
 
     @Test
