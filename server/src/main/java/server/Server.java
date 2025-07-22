@@ -6,7 +6,7 @@ import spark.Spark;
 
 public class Server {
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws DataAccessException {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
 
@@ -15,6 +15,8 @@ public class Server {
         var userDAO = DataAccessFactory.getUserDAO();
         var authDAO = DataAccessFactory.getAuthDAO();
         var gameDAO = DataAccessFactory.getGameDAO();
+
+        DatabaseInitializer.initialize();
 
         //add handlers
         Spark.post("/user", new RegisterHandler(userDAO, authDAO));
