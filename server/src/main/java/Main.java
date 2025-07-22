@@ -11,10 +11,5 @@ public class Main {
 
         //connnect to server
         Server server = new Server();
-        try {
-            server.run(8080);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+        server.run(8080);}
 }

@@ -6,9 +6,15 @@ import spark.Spark;
 
 public class Server {
 
-    public int run(int desiredPort) throws DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
+
+        try {
+            DatabaseInitializer.initialize();
+        } catch (DataAccessException exception) {
+            throw new RuntimeException(exception);
+        } //I know I have a problem here. I might not need to throw an error. But let me fix it later.
 
         // Register your endpoints and handle exceptions here.
         //register endpoints through INTERFACE!!!!!!
@@ -16,7 +22,6 @@ public class Server {
         var authDAO = DataAccessFactory.getAuthDAO();
         var gameDAO = DataAccessFactory.getGameDAO();
 
-        DatabaseInitializer.initialize();
 
         //add handlers
         Spark.post("/user", new RegisterHandler(userDAO, authDAO));
