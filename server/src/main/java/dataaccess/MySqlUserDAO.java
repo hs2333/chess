@@ -3,6 +3,7 @@ import model.UserData;
 import java.sql.*;
 
 //similar to MemoryXDAO
+//MySQL implementation of the UserDAO interface
 public class MySqlUserDAO implements UserDAO {
 
     @Override

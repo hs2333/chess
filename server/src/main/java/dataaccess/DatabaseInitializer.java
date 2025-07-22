@@ -43,7 +43,7 @@ public class DatabaseInitializer {
                 );
             """);
 
-            
+
         } catch (SQLException e) {
             throw new DataAccessException("Failed to initialize database", e);
         }
