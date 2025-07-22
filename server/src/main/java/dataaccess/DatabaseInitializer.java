@@ -7,6 +7,7 @@ import java.sql.Statement;
 public class DatabaseInitializer {
 
     public static void initialize() throws DataAccessException {
+        DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
