@@ -14,7 +14,7 @@ import java.util.*;
 public class ServerFacade {
 
     private String baseURL = "http://localhost:8080";
-    private String authToken;
+    public String authToken;
 
     public ServerFacade() {}
     //url instead of port num
