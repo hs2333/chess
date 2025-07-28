@@ -5,20 +5,6 @@ import model.GameData;
 import model.GamesList;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-
-
-import com.google.gson.Gson;
-import model.GameData;
-import model.GamesList;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -206,7 +192,7 @@ public class ServerFacade {
             }
             return sb.toString();
         } catch (IOException exception) {
-            return "";
+            return "Error reading response: " + exception.getMessage();
         }
     }
 }
