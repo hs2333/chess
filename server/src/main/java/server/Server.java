@@ -1,7 +1,6 @@
 package server;
 
 import service.*;
-import spark.*;
 import dataaccess.*;
 import spark.Spark;
 
@@ -38,7 +37,8 @@ public class Server {
         Spark.post("/game", new CreateGameHandler(gameDAO, authDAO));
         Spark.get("/game", new ListGamesHandler(gameDAO, authDAO));
         Spark.put("/game", new JoinGameHandler(gameDAO, authDAO));
-        //This line initializes the server and can be removed once you have a functioning endpoint 
+
+        //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
         Spark.awaitInitialization();
