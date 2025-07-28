@@ -24,12 +24,17 @@ public class loginREPL {
                 case "help" -> printPreloginHelp();
                 case "register" -> doRegister();
                 case "login" -> doLogin();
+                case "h" -> printPreloginHelp();
+                case "r" -> doRegister();
+                case "l" -> doLogin();
                 case "quit" -> {
                     System.out.println("DONE");
                     return;
                 }
                 default -> System.out.println("---- Unknown command. Type 'help' for options.");
+
             }
+
         }
     }
 
@@ -44,6 +49,11 @@ public class loginREPL {
                 case "list games" -> doListGames();
                 case "play game" -> doJoinGame();
                 case "observe game" -> doObserveGame();
+                case "h" -> printPostloginHelp();
+                case "c" -> doCreateGame();
+                case "l" -> doListGames();
+                case "p" -> doJoinGame();
+                case "o" -> doObserveGame();
                 case "logout" -> {
                     if (facade.logout()) {
                         System.out.println("LOGGED OUT");
@@ -61,21 +71,23 @@ public class loginREPL {
     private void printPreloginHelp() {
         System.out.println("""
             Commands:
-            - register
-            - login
-            - help
+            - help [h]
+            - register [r]
+            - login [l]
+            
             - quit
             """);
     }
     private void printPostloginHelp() {
         System.out.println("""
             Commands:
-            - create game
-            - list games
-            - play game
-            - observe game
+            - help [h]
+            - create game [c]
+            - list games [l]
+            - play game [p]
+            - observe game [o]
+
             - logout
-            - help
             """);
     }
 
@@ -158,6 +170,7 @@ public class loginREPL {
         } else {
             System.out.println("---- Failed to join game.");
         }}
+
 
     //observe game
     private void doObserveGame() {
