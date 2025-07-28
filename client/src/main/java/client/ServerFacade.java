@@ -16,7 +16,9 @@ public class ServerFacade {
     private String baseURL = "http://localhost:8080";
     public String authToken;
 
-    public ServerFacade() {}
+    public ServerFacade() {
+    }
+
     //url instead of port num
     public ServerFacade(String url) {
         baseURL = url;
@@ -28,7 +30,9 @@ public class ServerFacade {
         var jsonBody = new Gson().toJson(body);
         //can't use the same info to register
         Map resp = request("POST", "/user", jsonBody);
-        if (resp.containsKey("Error")) {return false;}
+        if (resp.containsKey("Error")) {
+            return false;
+        }
         //check handlers if authToken
         authToken = (String) resp.get("authToken");
 
@@ -41,7 +45,9 @@ public class ServerFacade {
         var jsonBody = new Gson().toJson(body);
 
         Map resp = request("POST", "/session", jsonBody);
-        if (resp.containsKey("Error")) {return false;}
+        if (resp.containsKey("Error")) {
+            return false;
+        }
         authToken = (String) resp.get("authToken");
         return true;
     }
@@ -49,7 +55,9 @@ public class ServerFacade {
     //logout
     public boolean logout() {
         Map resp = request("DELETE", "/session");
-        if (resp.containsKey("Error")) {return false;}
+        if (resp.containsKey("Error")) {
+            return false;
+        }
         authToken = null;
         return true;
     }
@@ -61,8 +69,9 @@ public class ServerFacade {
 
         Map resp = request("POST", "/game", jsonBody);
 
-        if (resp.containsKey("Error"))
-        {return -1;}
+        if (resp.containsKey("Error")) {
+            return -1;
+        }
 
         return ((Double) resp.get("gameID")).intValue(); // safe cast
     }
@@ -71,11 +80,12 @@ public class ServerFacade {
     public HashSet<GameData> listGames() {
         String resp = requestString("GET", "/game");
         if (resp.startsWith("Error")) {
-            return new HashSet<>();}
+            return new HashSet<>();
+        }
 
         GamesList gamesList = new Gson().fromJson(resp, GamesList.class);
         //compare to GameData-->single game, GamesLists contain multiple games-->HashSet
-        return gamesList.games() != null  ?  gamesList.games()  :  new HashSet<>();
+        return gamesList.games() != null ? gamesList.games() : new HashSet<>();
 
     }
 
@@ -98,34 +108,13 @@ public class ServerFacade {
     }
 
 
-
-
-
-
     private Map request(String method, String endpoint) {
         return request(method, endpoint, null);
     }
+
     private Map request(String method, String endpoint, String body) {
         try {
-            URI uri = new URI(baseURL + endpoint);
-            HttpURLConnection http = (HttpURLConnection)uri.toURL().openConnection();
-            http.setRequestMethod(method);
-            http.setRequestProperty("Accept", "application/json");
-
-            //check authToken and body
-            if (authToken != null) {
-                http.setRequestProperty("Authorization", authToken);
-            }
-            if (body != null) {
-                http.setDoOutput(true);
-                http.setRequestProperty("Content-Type", "application/json");
-                try (var outputStream = http.getOutputStream()) {
-                    outputStream.write(body.getBytes());
-                }
-                //catch
-            }
-
-            http.connect();
+            HttpURLConnection http = createConnection(method, endpoint, body);
 
 
             InputStreamReader reader;
@@ -143,32 +132,13 @@ public class ServerFacade {
     }
 
 
-
-
     private String requestString(String method, String endpoint) {
         return requestString(method, endpoint, null);
     }
+
     private String requestString(String method, String endpoint, String body) {
         try {
-            URI uri = new URI(baseURL + endpoint);
-            HttpURLConnection http = (HttpURLConnection)uri.toURL().openConnection();
-            http.setRequestMethod(method);
-            http.setRequestProperty("Accept", "application/json");
-
-            //check authToken and body
-            if (authToken != null) {
-                http.setRequestProperty("Authorization", authToken);
-            }
-            if (body != null) {
-                http.setDoOutput(true);
-                http.setRequestProperty("Content-Type", "application/json");
-                try (var outputStream = http.getOutputStream()) {
-                    outputStream.write(body.getBytes());
-                }
-            }
-
-            http.connect();
-
+            HttpURLConnection http = createConnection(method, endpoint, body);
 
             InputStreamReader reader;
             if (http.getResponseCode() >= 400) {
@@ -197,5 +167,28 @@ public class ServerFacade {
             return "Error reading response: " + exception.getMessage();
         }
     }
-}
 
+
+    private HttpURLConnection createConnection(String method, String endpoint, String body) throws IOException, URISyntaxException {
+        URI uri = new URI(baseURL + endpoint);
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod(method);
+        http.setRequestProperty("Accept", "application/json");
+
+        //check authToken and body
+        if (authToken != null) {
+            http.setRequestProperty("Authorization", authToken);
+        }
+        if (body != null) {
+            http.setDoOutput(true);
+            http.setRequestProperty("Content-Type", "application/json");
+            try (var outputStream = http.getOutputStream()) {
+                outputStream.write(body.getBytes());
+            }
+            //catch
+        }
+
+        http.connect();
+        return http;
+    }
+}
