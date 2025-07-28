@@ -1,8 +1,22 @@
+import client.ServerFacade;
+import ui.loginREPL;
+import client.*;
+import model.*;
+import java.util.*;
 import chess.*;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+        System.out.println("♕ 240 Chess Client:");
+        
+
+        //start the server
+        ServerFacade server = new ServerFacade();
+
+        //loginREPL script
+        loginREPL login = new loginREPL(server);
+        login.run();
+        System.out.println("Exited");
     }
 }
+
