@@ -1,5 +1,6 @@
 package model;
 import chess.ChessGame;
+import java.util.HashSet;
 
 public record GameData(
         int gameID,
