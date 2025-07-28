@@ -70,11 +70,13 @@ public class ServerFacade {
     //list games
     public HashSet<GameData> listGames() {
         String resp = requestString("GET", "/game");
-        if (resp.startsWith("Error")) {return new HashSet<>();}
+        if (resp.startsWith("Error")) {
+            return new HashSet<>();}
 
         GamesList gamesList = new Gson().fromJson(resp, GamesList.class);
         //compare to GameData-->single game, GamesLists contain multiple games-->HashSet
-        return gamesList.games();
+        return gamesList.games() != null  ?  gamesList.games()  :  new HashSet<>();
+
     }
 
     //join game
