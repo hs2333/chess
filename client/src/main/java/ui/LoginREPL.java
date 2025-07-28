@@ -4,12 +4,12 @@ import model.GameData;
 import java.util.*;
 
 //show in the terminal window
-public class loginREPL {
+public class LoginREPL {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade facade;
     private final Map<Integer, GameData> gameIndexMap = new HashMap<>();
 
-    public loginREPL(ServerFacade facade) {
+    public LoginREPL(ServerFacade facade) {
         this.facade = facade;
     }
 

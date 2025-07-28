@@ -1,5 +1,5 @@
 import client.ServerFacade;
-import ui.loginREPL;
+import ui.LoginREPL;
 
 
 public class Main {
@@ -9,7 +9,7 @@ public class Main {
         //start the server
         ServerFacade server = new ServerFacade();
         //loginREPL script
-        loginREPL login = new loginREPL(server);
+        LoginREPL login = new LoginREPL(server);
         login.run();
         System.out.println("Exited");
     }
