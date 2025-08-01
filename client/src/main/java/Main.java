@@ -7,9 +7,9 @@ public class Main {
         System.out.println("♕ 240 Chess Client:");
 
         //start the server
-        ServerFacade server = new ServerFacade();
+        WebServerFacade server = new ServerFacade();
         //loginREPL script
-        LoginREPL login = new LoginREPL(server);
+        GameLoginREPL login = new LoginREPL(server);
         login.run();
         System.out.println("Exited");
     }
