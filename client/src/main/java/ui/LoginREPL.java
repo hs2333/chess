@@ -177,7 +177,7 @@ public class LoginREPL {
                 GameplayREPL repl = new GameplayREPL(authToken, game.gameID(), username, teamColor);
                 repl.run();
             } catch (Exception exception) {
-                System.out.println("---- Error starting gameplay UI: " + e.getMessage());
+                System.out.println("---- Error starting gameplay UI: " + exception.getMessage());
                 exception.printStackTrace();
             }
         } else {

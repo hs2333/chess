@@ -34,9 +34,11 @@ public class Server {
         var authDAO = DataAccessFactory.getAuthDAO();
         var gameDAO = DataAccessFactory.getGameDAO();
 
+
         //add handlers
         //WenSocket set up
-        Spark.webSocket("/connect", WebSocketHandler.class);
+        Spark.webSocket("/", WebSocketHandler.class);
+
         //other endpoints
         Spark.post("/user", new RegisterHandler(userDAO, authDAO));
         Spark.post("/session", new LoginHandler(userDAO, authDAO));

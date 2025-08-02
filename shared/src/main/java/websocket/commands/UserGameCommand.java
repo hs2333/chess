@@ -59,4 +59,9 @@ public class UserGameCommand {
     public int hashCode() {
         return Objects.hash(getCommandType(), getAuthToken(), getGameID());
     }
+
+    public Integer getGameIDFromBase() {
+        return this.gameID;
+    }
+
 }
