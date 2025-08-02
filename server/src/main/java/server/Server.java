@@ -4,6 +4,13 @@ import service.*;
 import dataaccess.*;
 import spark.Spark;
 
+
+import org.eclipse.jetty.websocket.api.*;
+import javax.websocket.server.ServerEndpointConfig;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+
+
 public class Server {
 
 
@@ -28,6 +35,9 @@ public class Server {
         var gameDAO = DataAccessFactory.getGameDAO();
 
         //add handlers
+        //WenSocket set up
+        Spark.webSocket("/connect", WebSocketHandler.class);
+        //other endpoints
         Spark.post("/user", new RegisterHandler(userDAO, authDAO));
         Spark.post("/session", new LoginHandler(userDAO, authDAO));
         Spark.delete("/session", new LogoutHandler(userDAO, authDAO));
@@ -42,6 +52,9 @@ public class Server {
         Spark.init();
 
         Spark.awaitInitialization();
+
+
+
         return Spark.port();
     }
 
