@@ -1,5 +1,6 @@
 package ui;
-import client.ServerFacade;
+import chess.ChessGame;
+import client.*;
 import model.GameData;
 import java.util.*;
 
@@ -8,6 +9,9 @@ public class LoginREPL {
     private final Scanner scanner = new Scanner(System.in);
     private final ServerFacade facade;
     private final Map<Integer, GameData> gameIndexMap = new HashMap<>();
+
+    private String authToken = null;
+    private String username = null;
 
     public LoginREPL(ServerFacade facade) {
         this.facade = facade;
@@ -63,32 +67,34 @@ public class LoginREPL {
                     }
                 }
                 default -> System.out.println("---- Unknown command. Type 'help' for options.");
-            }}
+            }
+        }
     }
 
 
     //help
     private void printPreloginHelp() {
         System.out.println("""
-            Commands:
-            - help [h]
-            - register [r]
-            - login [l]
-            
-            - quit
-            """);
+                Commands:
+                - help [h]
+                - register [r]
+                - login [l]
+                
+                - quit
+                """);
     }
+
     private void printPostloginHelp() {
         System.out.println("""
-            Commands:
-            - help [h]
-            - create game [c]
-            - list games [l]
-            - play game [p]
-            - observe game [o]
-
-            - logout
-            """);
+                Commands:
+                - help [h]
+                - create game [c]
+                - list games [l]
+                - play game [p]
+                - observe game [o]
+                
+                - logout
+                """);
     }
 
     //register
@@ -163,13 +169,22 @@ public class LoginREPL {
             System.out.println("---- Invalid game number.");
             return;
         }
+
         if (facade.joinGame(game.gameID(), color)) {
             System.out.println("Joined game " + game.gameName() + " as " + color);
-            boolean isWhitePerspective = color.equalsIgnoreCase("WHITE");
-            ui.BoardRenderer.render(game.game(), isWhitePerspective);
+            try {
+                ChessGame.TeamColor teamColor = ChessGame.TeamColor.valueOf(color);
+                GameplayREPL repl = new GameplayREPL(authToken, game.gameID(), username, teamColor);
+                repl.run();
+            } catch (Exception exception) {
+                System.out.println("---- Error starting gameplay UI: " + e.getMessage());
+                exception.printStackTrace();
+            }
         } else {
             System.out.println("---- Failed to join game.");
-        }}
+        }
+    }
+
 
 
     //observe game
@@ -182,12 +197,20 @@ public class LoginREPL {
             System.out.println("---- Invalid game number.");
             return;
         }
-        System.out.print("Observe as WHITE or BLACK perspective? ");
-        String color = scanner.nextLine().toUpperCase();
 
+        try {
+            System.out.print("Observe as WHITE or BLACK perspective? ");
+            String color = scanner.nextLine().toUpperCase();
+            boolean isWhitePerspective = color.equals("WHITE");
 
-        //case ignored
-        boolean isWhitePerspective = color.equalsIgnoreCase("WHITE");
-        ui.BoardRenderer.render(game.game(), isWhitePerspective);
+            //pass null as playerColor to indicate observer mode
+            GameplayREPL repl = new GameplayREPL(authToken, game.gameID(), username, null);
+            repl.run();
+        } catch (Exception exception) {
+            System.out.println("---- Error starting observer UI: " + exception.getMessage());
+            exception.printStackTrace();
+        }
     }
+
+
 }
