@@ -107,6 +107,8 @@ public class LoginREPL {
         String email = scanner.nextLine();
         if (facade.register(user, pass, email)) {
             System.out.println("Registered and logged in as " + user);
+            this.authToken = facade.authToken;
+            this.username = user;
             runPostloginLoop();
         } else {
             //normally bc of repeated user info
@@ -122,6 +124,8 @@ public class LoginREPL {
         String pass = scanner.nextLine();
         if (facade.login(user, pass)) {
             System.out.println("Logged in as " + user);
+            this.authToken = facade.authToken;
+            this.username = user;
             runPostloginLoop();
         } else {
             System.out.println("---- Login failed.");
@@ -165,6 +169,9 @@ public class LoginREPL {
         String color = scanner.nextLine().toUpperCase();
 
         var game = gameIndexMap.get(num);
+
+        System.out.println("[Login] AuthToken before GameplayREPL: " + authToken);
+
         if (game == null) {
             System.out.println("---- Invalid game number.");
             return;
