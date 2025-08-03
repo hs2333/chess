@@ -12,5 +12,8 @@ public interface GameDAO {
 
     void updateGame(GameData game) throws DataAccessException;
      void clear() throws DataAccessException;
+
+    void setGameOver(int gameID, boolean gameOver) throws DataAccessException;
+    boolean getGameOver(int gameID) throws DataAccessException;
 }
 

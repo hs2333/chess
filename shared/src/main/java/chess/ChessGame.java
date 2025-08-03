@@ -216,6 +216,7 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
+    //one arg
     public boolean isInCheckmate(chess.ChessGame.TeamColor teamColor) {
         if (!isInCheck(teamColor)) {return false;}
 
@@ -296,6 +297,17 @@ public class ChessGame {
     @Override
     public int hashCode() {
         return Objects.hash(color, squares);
+    }
+
+
+    //for phase 6
+    //gameover boolean
+    private boolean gameOver = false;
+    public boolean getGameOver() {
+        return gameOver;
+    }
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }
 

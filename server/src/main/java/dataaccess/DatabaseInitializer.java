@@ -38,7 +38,8 @@ public class DatabaseInitializer {
                     gameName     VARCHAR(255) NOT NULL,
                     whiteUsername VARCHAR(255),
                     blackUsername VARCHAR(255),
-                    gameJSON     TEXT,
+                    gameJSON      TEXT,
+                    game_over     BOOLEAN DEFAULT FALSE,
                     FOREIGN KEY (whiteUsername) REFERENCES user(username) ON DELETE SET NULL,
                     FOREIGN KEY (blackUsername) REFERENCES user(username) ON DELETE SET NULL
                 );
@@ -50,3 +51,4 @@ public class DatabaseInitializer {
         }
     }
 }
+git

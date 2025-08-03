@@ -104,4 +104,35 @@ public class MySqlGameDAO implements GameDAO {
             throw new DataAccessException("Failed to clear game table", e);
         }
     }
+
+    @Override
+    public void setGameOver(int gameID, boolean gameOver) throws DataAccessException {
+        String query = "UPDATE game SET gameOver = ? WHERE gameID = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBoolean(1, gameOver);
+            stmt.setInt(2, gameID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error updating gameOver flag", e);
+        }
+    }
+
+    @Override
+    public boolean getGameOver(int gameID) throws DataAccessException {
+        String query = "SELECT gameOver FROM game WHERE gameID = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, gameID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("gameOver");
+            } else {
+                throw new DataAccessException("Game not found for ID: " + gameID);
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error reading gameOver flag", e);
+        }
+    }
+
 }

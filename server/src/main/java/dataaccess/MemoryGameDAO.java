@@ -57,4 +57,20 @@ public class MemoryGameDAO implements GameDAO {
         GAMES.put(game.gameID(), game);
     }
 
+    @Override
+    public void setGameOver(int gameID, boolean gameOver) {
+        GameData game = GAMES.get(gameID);
+        if (game != null) {
+            game.game().setGameOver(gameOver);
+        }
+    }
+
+    @Override
+    public boolean getGameOver(int gameID) {
+        GameData game = GAMES.get(gameID);
+        return game != null && game.game().getGameOver();
+    }
+
+
+
 }
