@@ -8,11 +8,9 @@ import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
-import websocket.*;
 import websocket.messages.*;
 import websocket.commands.*;
 
-import javax.websocket.OnError;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -245,11 +243,5 @@ public class WebSocketHandler {
         if (s.isOpen()) {
             s.getRemote().sendString(gson.toJson(msg));
         }
-    }
+    }}
 
-    @OnError
-    public void onError(Session session, Throwable throwable) {
-        System.err.println("[WebSocket Error] " + throwable.getMessage());
-        throwable.printStackTrace();
-    }
-}
