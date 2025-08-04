@@ -40,14 +40,14 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                 case "help" -> printHelp();
                 case "move" -> {
                     if (playerColor == null) {
-                        System.out.println("[!] You are observing. Cannot make a move.");
+                        System.out.println("---- You are observing. Cannot make a move.");
                     } else {
                         doMove();
                     }
                 }
                 case "resign" -> {
                     if (playerColor == null) {
-                        System.out.println("[!] Observers cannot resign.");
+                        System.out.println("---- Observers cannot resign.");
                     } else if (confirm("Are you sure you want to resign? (y/n): ")) {
                         ws.resign(authToken, gameID);
                         //ws.close(); //why would I want to close it so fast why whyw hywy whywhwywhyhwhy
@@ -66,12 +66,12 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                 }
                 case "highlight" -> {
                     if (playerColor == null) {
-                        System.out.println("[!] Cannot highlight moves in observer mode.");
+                        System.out.println("---- Cannot highlight moves in observer mode.");
                     } else {
                         doHighlight();
                     }
                 }
-                default -> System.out.println("[!] Unknown command.");
+                default -> System.out.println("---- Unknown command.");
             }
         }
     }
@@ -111,7 +111,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             ChessMove move = new ChessMove(fromPos, toPos, promotion);
             ws.makeMove(authToken, gameID, move);
         } catch (Exception e) {
-            System.out.println("[!] Invalid move: " + e.getMessage());
+            System.out.println("---- Invalid move: " + e.getMessage());
         }
     }
 
@@ -124,14 +124,14 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             ChessPiece piece = game.getBoard().getPiece(position);
 
             if (piece == null || piece.getTeamColor() != playerColor) {
-                System.out.println("[!] No piece you control at that position.");
+                System.out.println("---- No piece you control at that position.");
                 return;
             }
 
             Collection<ChessMove> legalMoves = game.validMoves(position);
             BoardRenderer.renderWithHighlights(game, playerColor == ChessGame.TeamColor.WHITE, position, legalMoves);
         } catch (Exception e) {
-            System.out.println("[!] Failed to highlight: " + e.getMessage());
+            System.out.println("---- Failed to highlight: " + e.getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                     this.game = data.game();
                     BoardRenderer.render(game, playerColor == ChessGame.TeamColor.WHITE);
                 } else {
-                    System.out.println("[!] No game data received.");
+                    System.out.println("---- No game data received.");
                 }
 
                 System.out.println("[Server] Game loaded:");
