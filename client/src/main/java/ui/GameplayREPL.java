@@ -50,7 +50,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                         System.out.println("[!] Observers cannot resign.");
                     } else if (confirm("Are you sure you want to resign? (y/n): ")) {
                         ws.resign(authToken, gameID);
-                        ws.close();
+                        //ws.close(); //why would I want to close it so fast why whyw hywy whywhwywhyhwhy
                         return;
                     }
                 }
@@ -98,7 +98,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             ChessPosition fromPos = parsePosition(from);
             ChessPosition toPos = parsePosition(to);
 
-            System.out.print("Promotion? (q/r/b/n or leave blank): ");
+            //System.out.print("Promotion? (q/r/b/n or leave blank): ");
             String promo = scanner.nextLine().trim().toLowerCase();
             ChessPiece.PieceType promotion = switch (promo) {
                 case "q" -> ChessPiece.PieceType.QUEEN;

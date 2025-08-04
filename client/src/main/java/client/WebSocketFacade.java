@@ -36,8 +36,6 @@ public class WebSocketFacade {
     public void onOpen(Session session) {
         this.session = session;
         System.out.println("[WebSocket] Connected");
-
-        // ✅ Safe to send CONNECT now
         if (pendingConnectCommand != null) {
             sendCommand(pendingConnectCommand);
             pendingConnectCommand = null;
@@ -48,14 +46,13 @@ public class WebSocketFacade {
     public void makeMove(String authToken, int gameID, ChessMove move) {
         sendCommand(new MakeMoveCommand(authToken, gameID, move));
     }
-
     public void resign(String authToken, int gameID) {
         sendCommand(new ResignCommand(authToken, gameID));
     }
-
     public void leave(String authToken, int gameID) {
         sendCommand(new LeaveCommand(authToken, gameID));
     }
+
 
     private void sendCommand(UserGameCommand command) {
         if (session != null && session.isOpen()) {
@@ -63,6 +60,7 @@ public class WebSocketFacade {
             session.getAsyncRemote().sendText(json);
         }
     }
+
 
     @OnMessage
     public void onMessage(String message) {
@@ -83,6 +81,7 @@ public class WebSocketFacade {
             }
         }
     }
+
 
     public void close() {
         try {

@@ -7,5 +7,4 @@ public class ResignCommand extends UserGameCommand {
 
     public Integer getGameID() {
         return this.getGameIDFromBase(); // You can expose this in UserGameCommand or just call super.getGameID() if public
-    }
-}
+    }}
