@@ -8,6 +8,7 @@ import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import websocket.*;
 import websocket.messages.*;
 import websocket.commands.*;
 
@@ -15,7 +16,6 @@ import javax.websocket.OnError;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebSocket
