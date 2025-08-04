@@ -6,7 +6,6 @@ import websocket.messages.*;
 import websocket.commands.*;
 
 import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
 
 @ClientEndpoint
@@ -64,7 +63,7 @@ public class WebSocketFacade {
 
     @OnMessage
     public void onMessage(String message) {
-        if (message == null || message.isBlank()) return;
+        if (message == null || message.isBlank()) {return;}
         ServerMessage base = gson.fromJson(message, ServerMessage.class);
         switch (base.getServerMessageType()) {
             case LOAD_GAME -> {
@@ -93,18 +92,5 @@ public class WebSocketFacade {
         }
     }
 
-
-
-    @OnClose
-    public void onClose(Session session, CloseReason reason) {
-        System.out.println("[WebSocket] Closed: " + reason);
-        this.session = null;
-    }
-
-    @OnError
-    public void onError(Session session, Throwable throwable) {
-        System.out.println("[WebSocket] Error: " + throwable.getMessage());
-        throwable.printStackTrace();
-    }
 
 }

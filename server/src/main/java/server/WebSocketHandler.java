@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @WebSocket
 public class WebSocketHandler {
-    private static final Map<Session, String> sessionToUser = new ConcurrentHashMap<>();
-    private static final Map<Integer, Map<Session, Boolean>> gameSessions = new ConcurrentHashMap<>();
+    private static final Map<Session, String> SESSION_TO_USER = new ConcurrentHashMap<>();
+    private static final Map<Integer, Map<Session, Boolean>> GAMESESSIONS = new ConcurrentHashMap<>();
     private final Gson gson = new Gson();
 
     private final Map<Integer, Boolean> gameOverMap = new HashMap<>();
@@ -32,8 +32,8 @@ public class WebSocketHandler {
 
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
-        sessionToUser.remove(session);
-        gameSessions.values().forEach(sessions -> sessions.remove(session));
+        SESSION_TO_USER.remove(session);
+        GAMESESSIONS.values().forEach(sessions -> sessions.remove(session));
         System.out.println("WebSocket closed: " + session);
     }
 
@@ -63,9 +63,9 @@ public class WebSocketHandler {
             gameOverMap.put(game.gameID(), false);
 
 
-            sessionToUser.put(session, auth.username());
-            gameSessions.putIfAbsent(cmd.getGameID(), new ConcurrentHashMap<>());
-            gameSessions.get(cmd.getGameID()).put(session, true);
+            SESSION_TO_USER.put(session, auth.username());
+            GAMESESSIONS.putIfAbsent(cmd.getGameID(), new ConcurrentHashMap<>());
+            GAMESESSIONS.get(cmd.getGameID()).put(session, true);
 
             String role = cmd.getPlayerColor() == null ? "an observer" : "a player";
             broadcast(cmd.getGameID(), new Notification(auth.username() + " joined as " + role),session);
@@ -91,11 +91,13 @@ public class WebSocketHandler {
             }
             ChessGame.TeamColor color = getPlayerColor(auth.username(), game);
 
-            if (color == null) throw new DataAccessException("You are not a player in this game");
+            if (color == null) {
+                throw new DataAccessException("You are not a player in this game");
+            }
             if (gameOverMap.getOrDefault(game.gameID(), false))
-                throw new DataAccessException("Game is already over");
+                {throw new DataAccessException("Game is already over");}
             if (game.game().getTeamTurn() != color)
-                throw new DataAccessException("It's not your turn");
+                {throw new DataAccessException("It's not your turn");}
 
             game.game().makeMove(cmd.getMove());
             DataAccessFactory.getGameDAO().updateGame(game);
@@ -131,7 +133,7 @@ public class WebSocketHandler {
                 return;
             }
             System.out.println("Wait 0");
-            sessionToUser.put(session, auth.username());
+            SESSION_TO_USER.put(session, auth.username());
             System.out.println("Wait 1");
 
 
@@ -145,9 +147,11 @@ public class WebSocketHandler {
 
             ChessGame.TeamColor color = getPlayerColor(auth.username(), game);
 
-            if (color == null) throw new DataAccessException("Observers cannot resign");
+            if (color == null) {
+                throw new DataAccessException("Observers cannot resign");
+            }
             if (gameOverMap.getOrDefault(game.gameID(), false))
-                throw new DataAccessException("Game is already over");
+            {throw new DataAccessException("Game is already over");}
 
             // If already resigned, don't repeat the endgame!!!!
             if (gameOverMap.getOrDefault(game.gameID(), false)) {
@@ -212,21 +216,21 @@ public class WebSocketHandler {
 
         DataAccessFactory.getGameDAO().updateGame(updated);
         //remove session from session maps
-        sessionToUser.remove(session);
-        gameSessions.getOrDefault(cmd.getGameID(), new HashMap<>()).remove(session);
+        SESSION_TO_USER.remove(session);
+        GAMESESSIONS.getOrDefault(cmd.getGameID(), new HashMap<>()).remove(session);
 
         broadcast(cmd.getGameID(), new Notification(username + " left the game."), session);
     }
 
 
     private ChessGame.TeamColor getPlayerColor(String username, GameData game) {
-        if (username.equals(game.whiteUsername())) return ChessGame.TeamColor.WHITE;
-        if (username.equals(game.blackUsername())) return ChessGame.TeamColor.BLACK;
+        if (username.equals(game.whiteUsername())) {return ChessGame.TeamColor.WHITE;}
+        if (username.equals(game.blackUsername())) {return ChessGame.TeamColor.BLACK;}
         return null;
     }
 
     private void broadcast(int gameID, ServerMessage msg, Session sender) throws IOException {
-        for (Session s : gameSessions.getOrDefault(gameID, Map.of()).keySet()) {
+        for (Session s : GAMESESSIONS.getOrDefault(gameID, Map.of()).keySet()) {
             //skip sender if it's a NOTIFICATION
             // (but not for resign)
             String content = (msg instanceof Notification notif) ? notif.getMessage().toLowerCase() : "";
