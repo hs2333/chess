@@ -206,9 +206,9 @@ public class LoginREPL {
         }
 
         try {
-            System.out.print("Observe as WHITE or BLACK perspective? ");
-            String color = scanner.nextLine().toUpperCase();
-            boolean isWhitePerspective = color.equals("WHITE");
+            //System.out.print("Observe as WHITE or BLACK perspective? ");
+            //String color = scanner.nextLine().toUpperCase();
+            //boolean isWhitePerspective = color.equals("WHITE");
 
             //pass null as playerColor to indicate observer mode
             GameplayREPL repl = new GameplayREPL(authToken, game.gameID(), username, null);

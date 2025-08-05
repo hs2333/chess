@@ -38,7 +38,14 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
 
             switch (input) {
                 case "help" -> printHelp();
+                case "h" -> printHelp();
                 case "move" -> {
+                    if (playerColor == null) {
+                        System.out.println("---- You are observing. Cannot make a move.");
+                    } else {
+                        doMove();
+                    }
+                } case "m" -> {
                     if (playerColor == null) {
                         System.out.println("---- You are observing. Cannot make a move.");
                     } else {
@@ -58,6 +65,10 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                     ws.leave(authToken, gameID);
                     ws.close();
                     return;
+                } case "l" -> {
+                    ws.leave(authToken, gameID);
+                    ws.close();
+                    return;
                 }
                 case "redraw" -> {
                     boolean whitePerspective = playerColor == null || playerColor == ChessGame.TeamColor.WHITE;
@@ -65,9 +76,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
                     System.out.println("Turn: " + game.getTeamTurn());
                 }
                 case "highlight" -> {
-                    if (playerColor == null) {
-                        System.out.println("---- Cannot highlight moves in observer mode.");
-                    } else {
+                    {
                         doHighlight();
                     }
                 }
@@ -79,12 +88,14 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
     private void printHelp() {
         System.out.println("""
                 Commands:
-                - move        Make a move
-                - resign      Resign from the game
-                - leave       Leave the game and return to menu
-                - redraw      Redraw the current board
+                - help [h]    Show this help menu
                 - highlight   Highlight legal moves for one of your pieces
-                - help        Show this help menu
+                
+                - move [m]    Make a move
+                - leave [l]   Leave the game and return to menu
+                
+                - resign      Resign from the game
+                - redraw      Redraw the current board
                 """);
     }
 
@@ -94,6 +105,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             String from = scanner.nextLine();
             System.out.print("To (e.g. e4): ");
             String to = scanner.nextLine();
+
 
             ChessPosition fromPos = parsePosition(from);
             ChessPosition toPos = parsePosition(to);
@@ -109,9 +121,25 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             };
 
             ChessMove move = new ChessMove(fromPos, toPos, promotion);
+
+            //check valid pieces
+            ChessPiece movingPiece = game.getBoard().getPiece(move.getStartPosition());
+
+            if (movingPiece == null) {
+                //this is... just easier... it's 6am in the morning, so let's just use the easy way
+                System.out.println("[Error] No piece there.");
+                return;
+            }
+
+            if (movingPiece.getTeamColor() != game.getTeamTurn()) {
+                System.out.println("[Error] Not your piece.");
+                return;
+            }
+
+
             ws.makeMove(authToken, gameID, move);
         } catch (Exception e) {
-            System.out.println("---- Invalid move: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -123,10 +151,10 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
             ChessPosition position = parsePosition(input);
             ChessPiece piece = game.getBoard().getPiece(position);
 
-            if (piece == null || piece.getTeamColor() != playerColor) {
-                System.out.println("---- No piece you control at that position.");
-                return;
-            }
+//            if (piece == null || piece.getTeamColor() != playerColor) {
+//                System.out.println("---- No piece you control at that position.");
+//                return;
+//            }
 
             Collection<ChessMove> legalMoves = game.validMoves(position);
             BoardRenderer.renderWithHighlights(game, playerColor == ChessGame.TeamColor.WHITE, position, legalMoves);
@@ -136,9 +164,17 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
     }
 
     private ChessPosition parsePosition(String input) {
-        if (input == null || input.length() < 2) {
-            throw new IllegalArgumentException("Input must be at least 2 characters long (e.g., e2)");
+        //check valid input
+        if (input == null || input.length() != 2) {
+            throw new IllegalArgumentException("[Error] Invalid input");
         }
+
+        char file = input.charAt(0);
+        char rank = input.charAt(1);
+        if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
+            throw new IllegalArgumentException("[Error] Invalid input.");
+        }
+
         int row = Character.getNumericValue(input.charAt(1));
         int col = input.charAt(0) - 'a' + 1;
         return new ChessPosition(row, col);
@@ -165,7 +201,7 @@ public class GameplayREPL implements WebSocketFacade.MessageHandler {
 
                 System.out.println("[Server] Game loaded:");
                 boolean whitePerspective = playerColor == null || playerColor == ChessGame.TeamColor.WHITE;
-                BoardRenderer.render(game, whitePerspective);
+                //BoardRenderer.render(game, whitePerspective);
                 System.out.println("Turn: " + game.getTeamTurn());
             }
             case NOTIFICATION -> {

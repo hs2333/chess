@@ -1,7 +1,6 @@
 package server;
 
-import chess.ChessGame;
-import chess.InvalidMoveException;
+import chess.*;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.AuthData;
@@ -67,8 +66,13 @@ public class WebSocketHandler {
             GAMESESSIONS.putIfAbsent(cmd.getGameID(), new ConcurrentHashMap<>());
             GAMESESSIONS.get(cmd.getGameID()).put(session, true);
 
-            String role = cmd.getPlayerColor() == null ? "an observer" : "a player";
-            broadcast(cmd.getGameID(), new Notification(auth.username() + " joined as " + role),session);
+            //player join as black or white
+            String role;
+            if (cmd.getPlayerColor() == null) {role = "an observer";}
+            else if (cmd.getPlayerColor() == ChessGame.TeamColor.WHITE) {role = "the white player";}
+            else {role = "the black player";}
+
+            broadcast(cmd.getGameID(), new Notification(auth.username() + " joined as " + role), session);
             send(session, new LoadGameMessage(game));
         } catch (DataAccessException e) {
             send(session, new ErrorMessage(e.getMessage()));
@@ -79,6 +83,7 @@ public class WebSocketHandler {
 
     private void handleMakeMove(Session session, MakeMoveCommand cmd) throws IOException {
         try {
+            //check check a lot of check
             AuthData auth = DataAccessFactory.getAuthDAO().getAuth(cmd.getAuthToken());
             if (auth == null) {
                 send(session, new ErrorMessage("Error: Unauthorized"));
@@ -89,32 +94,40 @@ public class WebSocketHandler {
                 send(session, new ErrorMessage("Game not found"));
                 return;
             }
-            ChessGame.TeamColor color = getPlayerColor(auth.username(), game);
 
+            ChessGame.TeamColor color = getPlayerColor(auth.username(), game);
             if (color == null) {
-                throw new DataAccessException("You are not a player in this game");
+                throw new DataAccessException("You have to be a player to move a piece.");
             }
             if (gameOverMap.getOrDefault(game.gameID(), false))
                 {throw new DataAccessException("Game is already over");}
             if (game.game().getTeamTurn() != color)
                 {throw new DataAccessException("It's not your turn");}
 
+
             game.game().makeMove(cmd.getMove());
             DataAccessFactory.getGameDAO().updateGame(game);
 
+
             String note;
+            ChessPiece piece = game.game().getBoard().getPiece(cmd.getMove().getEndPosition());
+            String pieceName = piece != null ? piece.getPieceType().toString().toLowerCase() : "piece";
+            String from = posToString(cmd.getMove().getStartPosition());
+            String to = posToString(cmd.getMove().getEndPosition());
             ChessGame.TeamColor opponent = color == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
             if (game.game().isInCheckmate(opponent)) {
-                note = "Checkmate! " + auth.username() + " wins!";
+                note = auth.username() + " moved " + pieceName + " from " + from + " to " + to + ".\n" + "Checkmate! " + auth.username() + " wins!";
                 //DataAccessFactory.getGameDAO().setGameOver(cmd.getGameID(), true);
                 gameOverMap.put(game.gameID(), true);
             } else if (game.game().isInStalemate(opponent)) {
-                note = "Stalemate! It's a tie.";
+                note = auth.username() + " moved " + pieceName + " from " + from + " to " + to + ".\n" + "Stalemate! It's a tie.";
                 gameOverMap.put(game.gameID(), true);}
             else if (game.game().isInCheck(opponent)) {
                 note = auth.username() + " moved. " + opponent + " is in check!";
             } else {
-                note = auth.username() + " moved.";
+
+                note = auth.username() + " moved " + pieceName + " from " + from + " to " + to + ".";
+
             }
 
             broadcast(cmd.getGameID(), new Notification(note),session);
@@ -247,5 +260,15 @@ public class WebSocketHandler {
         if (s.isOpen()) {
             s.getRemote().sendString(gson.toJson(msg));
         }
-    }}
+
+
+    }
+
+    private String posToString(ChessPosition pos) {
+        char col = (char) ('a' + pos.getColumn() - 1);
+        int row = pos.getRow();
+        return String.format("%c%d", col, row);
+    }
+
+}
 
